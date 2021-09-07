@@ -40,10 +40,9 @@ return_type CraneX7Hardware::configure(const hardware_interface::HardwareInfo& i
     if (joint.parameters["dxl_id"] != "") {
       dxl_id_list.push_back(std::stoi(joint.parameters["dxl_id"]));
     } else {
-      RCLCPP_ERROR(
-        rclcpp::get_logger("CraneX7Hardware"),
-        "Joint '%s' does not have 'dxl_id' parameter.",
-        joint.name.c_str());
+      RCLCPP_ERROR(rclcpp::get_logger("CraneX7Hardware"),
+                   "Joint '%s' does not have 'dxl_id' parameter.",
+                   joint.name.c_str());
       return return_type::ERROR;
     }
   }

@@ -36,6 +36,12 @@ def generate_launch_description():
                                    '-x', '0', '-y', '0', '-z', '0'],
                         output='screen')
 
+    crane_x7_controllers = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory('crane_x7_control'), 'launch'), 
+                    '/crane_x7_control.launch.py']),
+             )
+
     # spawn_joint_state_broadcaster = ExecuteProcess(
     #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
     #          'joint_state_broadcaster'],
@@ -72,4 +78,5 @@ def generate_launch_description():
         gazebo,
         node_robot_state_publisher,
         spawn_entity,
+        crane_x7_controllers
     ])

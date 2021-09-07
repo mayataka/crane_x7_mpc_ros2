@@ -50,8 +50,8 @@ def generate_launch_description():
     #         )
 
     return LaunchDescription([
-      controller_manager,
-      spawn_joint_state_broadcaster,
-    #   spawn_arm_controller,
-    #   spawn_gripper_controller
+        controller_manager,
+        spawn_joint_state_broadcaster,
+        # spawn_arm_controller,
+        # spawn_gripper_controller
     ])

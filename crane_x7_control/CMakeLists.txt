@@ -16,10 +16,10 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# find_package(dynamixel_sdk REQUIRED)
-# find_package(hardware_interface REQUIRED)
-# find_package(pluginlib REQUIRED)
-# find_package(rclcpp REQUIRED)
+find_package(dynamixel_sdk REQUIRED)
+find_package(hardware_interface REQUIRED)
+find_package(pluginlib REQUIRED)
+find_package(rclcpp REQUIRED)
 
 # ## COMPILE
 # set(LIBRARY_NAME "crane_x7_hardware")
@@ -55,6 +55,7 @@ find_package(ament_cmake REQUIRED)
 
 install(DIRECTORY
   config
+  launch
   DESTINATION share/${PROJECT_NAME}/
 )
 
