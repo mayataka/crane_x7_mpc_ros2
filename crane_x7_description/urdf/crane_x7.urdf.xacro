@@ -54,7 +54,7 @@
   <xacro:property name="NAME_JOINT_5" value="crane_x7_lower_arm_fixed_part_joint"/>
   <xacro:property name="NAME_JOINT_6" value="crane_x7_lower_arm_revolute_part_joint"/>
   <xacro:property name="NAME_JOINT_7" value="crane_x7_wrist_joint"/>
-  <xacro:property name="NAME_JOINT_HAND" value="crane_x7_gripper_finger_a_joint_trans"/>
+  <xacro:property name="NAME_JOINT_HAND" value="crane_x7_gripper_finger_a_joint"/>
 
   <xacro:property name="NAME_LINK_BASE" value="crane_x7_shoulder_fixed_part_link"/>
   <xacro:property name="NAME_LINK_1" value="crane_x7_shoulder_revolute_part_link"/>

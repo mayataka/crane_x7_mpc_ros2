@@ -16,21 +16,30 @@
 #include "rclcpp/macros.hpp"
 #include "rclcpp/rclcpp.hpp"
 
+
+namespace crane_x7_control {
+
 using hardware_interface::return_type;
 
-namespace crane_x7_control
-{
+enum class ControlMode {
+  Position,
+  Velocity,
+  Effort;
+};
+
 class CraneX7Hardware : public
-  hardware_interface::BaseInterface<hardware_interface::SystemInterface>
-{
+  hardware_interface::BaseInterface<hardware_interface::SystemInterface> {
 public:
   RCLCPP_SHARED_PTR_DEFINITIONS(CraneX7Hardware)
+
+  explicit CRANE_X7_CONTROL_PUBLIC
+  CraneX7Hardware(const ControlMode control_mode);
 
   CRANE_X7_CONTROL_PUBLIC
   ~CraneX7Hardware();
 
   CRANE_X7_CONTROL_PUBLIC
-  return_type configure(const hardware_interface::HardwareInfo & info) override;
+  return_type configure(const hardware_interface::HardwareInfo& info) override;
 
   CRANE_X7_CONTROL_PUBLIC
   std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
@@ -53,24 +62,18 @@ public:
 private:
   bool communication_timeout();
 
+  ControlMode control_mode_;
   std::shared_ptr<CraneX7Driver> driver_;
   double timeout_seconds_;
-  bool read_velocities_;
-  bool read_loads_;
-  bool read_voltages_;
-  bool read_temperatures_;
-
-  std::vector<double> hw_position_commands_;
-  std::vector<double> hw_position_states_;
-  std::vector<double> hw_velocity_states_;
-  std::vector<double> hw_load_states_;
-  std::vector<double> hw_voltage_states_;
-  std::vector<double> hw_temperature_states_;
-
+  bool read_velocities_, read_currents_, read_voltages_, read_temperatures_;
+  std::vector<double> hw_position_commands_, hw_velocity_commands_, hw_effort_commands_;
+                      hw_position_states_, hw_velocity_states_, hw_current_states_,
+                      hw_voltage_states_, hw_temperature_states_;
   rclcpp::Clock steady_clock_;
   rclcpp::Time prev_comm_timestamp_;
   bool timeout_has_printed_;
 };
+
 }  // namespace crane_x7_control
 
 #endif  // CRANE_X7_CONTROL__CRANE_X7_HARDWARE_HPP_

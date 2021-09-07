@@ -8,19 +8,19 @@ controller_manager:
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-    imu_sensor_broadcaster:
-      type: imu_sensor_broadcaster/IMUSensorBroadcaster
-
 velocity_controller:
   ros__parameters:
     joints:
-      - slider_to_cart
+      - crane_x7_shoulder_fixed_part_pan_joint
+      - crane_x7_shoulder_revolute_part_tilt_joint
+      - crane_x7_upper_arm_revolute_part_twist_joint
+      - crane_x7_upper_arm_revolute_part_rotate_joint
+      - crane_x7_lower_arm_fixed_part_joint
+      - crane_x7_lower_arm_revolute_part_joint
+      - crane_x7_wrist_joint
     command_interfaces:
       - velocity
     state_interfaces:
       - position
       - velocity
-imu_sensor_broadcaster:
-  ros__parameters:
-    sensor_name: cart_imu_sensor
-    frame_id: imu
+      - effort

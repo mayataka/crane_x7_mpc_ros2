@@ -6,37 +6,9 @@
 
 #include "crane_x7_control/crane_x7_driver.hpp"
 
-constexpr double PROTOCOL_VERSION = 1.0;
-constexpr int DXL_HOME_POSITION = 511;  // value range:0 ~ 1023
-constexpr double DXL_MAX_POSITION = 1023.0;
-constexpr double DXL_MAX_POSITION_DEGREES = 300.0;
-constexpr double TO_RADIANS = (DXL_MAX_POSITION_DEGREES / DXL_MAX_POSITION) * M_PI / 180.0;
-constexpr double TO_DXL_POS = 1.0 / TO_RADIANS;
-constexpr double TO_SPEED_REV_PER_MIN = 0.111;
-constexpr double TO_SPEED_RAD_PER_MIN = TO_SPEED_REV_PER_MIN * 2.0 * M_PI;
-constexpr double TO_SPEED_RAD_PER_SEC = TO_SPEED_RAD_PER_MIN / 60.0;
-constexpr double TO_LOAD_PERCENT = 0.1;
-constexpr double TO_VOLTAGE = 0.1;
 
-// Dynamixel AX-12A address table
-// Ref: https://emanual.robotis.com/docs/en/dxl/x/xm430-w350/ and https://emanual.robotis.com/docs/en/dxl/x/xm540-w270/ 
-constexpr uint16_t ADDR_TORQUE_ENABLE = 64;
-constexpr uint16_t ADDR_GOAL_POSITION = 116;
-// constexpr uint16_t ADDR_MOVING_SPEED = 32;
-constexpr uint16_t ADDR_PRESENT_POSITION = 132;
-constexpr uint16_t ADDR_PRESENT_VELOCITY = 128;
-// constexpr uint16_t ADDR_PRESENT_SPEED = 38;
-constexpr uint16_t ADDR_PRESENT_CURRENT = 126;
-// constexpr uint16_t ADDR_PRESENT_LOAD = 40;
-constexpr uint16_t ADDR_PRESENT_INPUT_VOLTAGE = 144;
-// constexpr uint16_t ADDR_PRESENT_VOLTAGE = 42;
-constexpr uint16_t ADDR_PRESENT_TEMPERATURE = 146;
-
-
-
-CraneX7Driver::CraneX7Driver(
-  const std::string& port_name, const int baudrate,
-  const std::vector<uint8_t>& id_list)
+CraneX7Driver::CraneX7Driver(const std::string& port_name, const int baudrate,
+                             const std::vector<uint8_t>& id_list)
 : baudrate_(baudrate), 
   id_list_(id_list) {
   dxl_port_handler_ = std::shared_ptr<dynamixel::PortHandler>(
@@ -305,7 +277,7 @@ double CraneX7Driver::dxl_speed_to_rps(const uint16_t speed) {
 }
 
 
-double CraneX7Driver::dxl_load_to_percent(const uint16_t load) {
+double CraneX7Driver::dxl_effort_to_current(const uint16_t effort) {
   if (load < 1024) {  // CCW, positive rotation
     return load * TO_LOAD_PERCENT;
   } else {  // CW, negative rotation

@@ -11,9 +11,6 @@ from launch.substitutions import Command
 
 
 def generate_launch_description():
-    # gazebo_ros_factory =  ExecuteProcess(
-    #     cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_factory.so'],
-    #     output='screen')
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
@@ -35,36 +32,41 @@ def generate_launch_description():
 
     spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
                         arguments=['-topic', 'robot_description',
-                                   '-entity', 'crane_x7'],
-                        # arguments=['-topic', 'robot_description',
-                        #            '-entity', 'crane_x7',
-                        #            '-x', '0', '-y', '0', '-z', '0'],
+                                   '-entity', 'crane_x7',
+                                   '-x', '0', '-y', '0', '-z', '0'],
                         output='screen')
 
-    load_joint_state_broadcaster = ExecuteProcess(
-        cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
-             'joint_state_broadcaster'],
-        shell=True,
-        output='screen'
-    )
+    # spawn_joint_state_broadcaster = ExecuteProcess(
+    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
+    #          'joint_state_broadcaster'],
+    #     shell=True,
+    #     output='screen'
+    # )
 
-    # load_joint_trajectory_controller = ExecuteProcess(
+    # spawn_effort_controller = ExecuteProcess(
     #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start', 'effort_controllers'],
     #     shell=True,
     #     output='screen'
     # )
 
+    # spawn_joint_state_broadcaster = ExecuteProcess(
+    #     cmd=['ros2', 'run', 'controller_manager', 'spawner.py', 
+    #          'joint_state_broadcaster'],
+    #     shell=True,
+    #     output='screen',
+    # )
+
     return LaunchDescription([
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=spawn_entity,
-                on_exit=[load_joint_state_broadcaster],
-            )
-        ),
         # RegisterEventHandler(
         #     event_handler=OnProcessExit(
-        #         target_action=load_joint_state_controller,
-        #         on_exit=[load_joint_trajectory_controller],
+        #         target_action=spawn_entity,
+        #         on_exit=[spawn_joint_state_broadcaster],
+        #     )
+        # ),
+        # RegisterEventHandler(
+        #     event_handler=OnProcessExit(
+        #         target_action=spawn_joint_state_broadcaster,
+        #         on_exit=[spawn_effort_controller],
         #     )
         # ),
         gazebo,

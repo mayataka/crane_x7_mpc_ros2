@@ -11,7 +11,13 @@ controller_manager:
 effort_controllers:
   ros__parameters:
     joints:
-      - slider_to_cart
+      - crane_x7_shoulder_fixed_part_pan_joint
+      - crane_x7_shoulder_revolute_part_tilt_joint
+      - crane_x7_upper_arm_revolute_part_twist_joint
+      - crane_x7_upper_arm_revolute_part_rotate_joint
+      - crane_x7_lower_arm_fixed_part_joint
+      - crane_x7_lower_arm_revolute_part_joint
+      - crane_x7_wrist_joint
     command_interfaces:
       - effort
     state_interfaces:
