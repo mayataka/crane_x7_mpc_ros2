@@ -54,7 +54,7 @@ bool CraneX7Driver::torque_enable(const bool enable) {
   bool retval = true;
   for (auto dxl_id : id_list_) {
     uint8_t dxl_error = 0;
-    int dxl_result = dxl_packet_handler_->write1ByteTxRx(
+    const int dxl_result = dxl_packet_handler_->write1ByteTxRx(
         dxl_port_handler_.get(), 
         dxl_id, ADDR_TORQUE_ENABLE, enable, &dxl_error);
     if (!parse_dxl_error(std::string(__func__), dxl_id, dxl_result, dxl_error)) {
@@ -66,17 +66,17 @@ bool CraneX7Driver::torque_enable(const bool enable) {
 
 
 bool CraneX7Driver::write_goal_joint_positions(const std::vector<double>& goal_positions) {
+  bool retval = true;
   if (goal_positions.size() != id_list_.size()) {
     last_error_log_ = std::string(__func__) + ": vectors size does not match: " +
       " goal_positions:" + std::to_string(goal_positions.size()) +
       ", id_list:" + std::to_string(id_list_.size());
     return false;
   }
-  bool retval = true;
   for (size_t i=0; i<goal_positions.size(); i++) {
+    const uint16_t goal_position = radian_to_dxl_pos(goal_positions[i]);
+    const auto dxl_id = id_list_[i];
     uint8_t dxl_error = 0;
-    uint16_t goal_position = radian_to_dxl_pos(goal_positions[i]);
-    auto dxl_id = id_list_[i];
     int dxl_result = dxl_packet_handler_->write2ByteTxRx(
         dxl_port_handler_.get(),
         dxl_id, ADDR_GOAL_POSITION, goal_position, &dxl_error);
@@ -88,35 +88,23 @@ bool CraneX7Driver::write_goal_joint_positions(const std::vector<double>& goal_p
 }
 
 
-bool CraneX7Driver::write_goal_speed_rpm(const uint8_t dxl_id, const double speed_rpm) {
-  const double SPEED_UNIT = 0.111;  // rpm
-  if (std::find(id_list_.begin(), id_list_.end(), dxl_id) == id_list_.end()) {
-    last_error_log_ = std::string(__func__) + ": dxl_id: " + std::to_string(dxl_id) +
-      "not found.";
+bool CraneX7Driver::write_goal_speed_rpm(const std::vector<double>& goal_speed_rpm) {
+  bool retval = true;
+  if (goal_speed_rpm.size() != id_list_.size()) {
+    last_error_log_ = std::string(__func__) + ": vectors size does not match: " +
+      " goal_speed_rpm:" + std::to_string(goal_speed_rpm.size()) +
+      ", id_list:" + std::to_string(id_list_.size());
     return false;
   }
-  int dxl_goal_speed = speed_rpm / SPEED_UNIT;
-  if (dxl_goal_speed > DXL_MAX_MOVING_SPEED) {
-    dxl_goal_speed = DXL_MAX_MOVING_SPEED;
-  } else if (dxl_goal_speed == 0) {
-    // If goal_speed is set to 0, it means the maximum rpm of the motor is used
-    // without controlling the speed.
-    dxl_goal_speed = 1;
-  }
-  bool retval = true;
-  uint8_t dxl_error = 0;
-  int dxl_result = dxl_packet_handler_->write2ByteTxRx(
-    dxl_port_handler_.get(),
-    dxl_id, ADDR_GOAL_SPEED, dxl_goal_speed, &dxl_error);
-  retval = parse_dxl_error(std::string(__func__), dxl_id, dxl_result, dxl_error);
-  return retval;
-}
-
-
-bool CraneX7Driver::write_goal_speed_rpm_all(const double speed_rpm) {
-  bool retval = true;
-  for (auto dxl_id : id_list_) {
-    if (!write_goal_speed_rpm(dxl_id, speed_rpm)) {
+  constexpr double SPEED_UNIT = 0.229; // rpm
+  for (size_t i=0; i<goal_speed_rpm.size(); i++) {
+    const int dxl_goal_speed = goal_speed_rpm[i] / SPEED_UNIT;
+    const auto dxl_id = id_list_[i];
+    uint8_t dxl_error = 0;
+    int dxl_result = dxl_packet_handler_->write2ByteTxRx(
+        dxl_port_handler_.get(),
+        dxl_id, ADDR_GOAL_VELOCITY, dxl_goal_speed, &dxl_error);
+    if (!parse_dxl_error(std::string(__func__), dxl_id, dxl_result, dxl_error)) {
       retval = false;
     }
   }
@@ -124,28 +112,25 @@ bool CraneX7Driver::write_goal_speed_rpm_all(const double speed_rpm) {
 }
 
 
-bool CraneX7Driver::write_goal_effort(const uint8_t dxl_id, const double effort) {
-  const int DXL_MAX_MOVING_SPEED = 1023;
-  const double SPEED_UNIT = 0.111;  // rpm
-  if (std::find(id_list_.begin(), id_list_.end(), dxl_id) == id_list_.end()) {
-    last_error_log_ = std::string(__func__) + ": dxl_id: " + std::to_string(dxl_id) +
-      "not found.";
+bool CraneX7Driver::write_goal_effort(const std::vector<double>& goal_effort) {
+  bool retval = true;
+  if (goal_effort.size() != id_list_.size()) {
+    last_error_log_ = std::string(__func__) + ": vectors size does not match: " +
+      " goal_effort:" + std::to_string(goal_effort.size()) +
+      ", id_list:" + std::to_string(id_list_.size());
     return false;
   }
-  int dxl_goal_effort = effort / SPEED_UNIT;
-  if (dxl_goal_speed > DXL_MAX_MOVING_SPEED) {
-    dxl_goal_speed = DXL_MAX_MOVING_SPEED;
-  } else if (dxl_goal_speed == 0) {
-    // If goal_speed is set to 0, it means the maximum rpm of the motor is used
-    // without controlling the speed.
-    dxl_goal_speed = 1;
+  for (size_t i=0; i<goal_effort.size(); i++) {
+    const uint16_t dxl_goal_current = dxl_effort_to_current(goal_effort[i]);
+    const auto dxl_id = id_list_[i];
+    uint8_t dxl_error = 0;
+    int dxl_result = dxl_packet_handler_->write2ByteTxRx(
+        dxl_port_handler_.get(),
+        dxl_id, ADDR_GOAL_CURRENT, dxl_goal_current, &dxl_error);
+    if (!parse_dxl_error(std::string(__func__), dxl_id, dxl_result, dxl_error)) {
+      retval = false;
+    }
   }
-  bool retval = true;
-  uint8_t dxl_error = 0;
-  int dxl_result = dxl_packet_handler_->write2ByteTxRx(
-    dxl_port_handler_.get(),
-    dxl_id, ADDR_GOAL_SPEED, dxl_goal_speed, &dxl_error);
-  retval = parse_dxl_error(std::string(__func__), dxl_id, dxl_result, dxl_error);
   return retval;
 }
 

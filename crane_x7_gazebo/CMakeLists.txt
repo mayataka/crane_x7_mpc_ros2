@@ -39,11 +39,11 @@ install(DIRECTORY
 #   std_msgs
 # )
 
-add_executable(effort_ctrl src/effort_ctrl.cpp)
-ament_target_dependencies(effort_ctrl
-  rclcpp
-  std_msgs
-)
+# add_executable(effort_ctrl src/effort_ctrl.cpp)
+# ament_target_dependencies(effort_ctrl
+#   rclcpp
+#   std_msgs
+# )
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
@@ -53,9 +53,8 @@ if(BUILD_TESTING)
 endif()
 
 ## Install
-# install(TARGETS example_position example_velocity example_effort
-install(TARGETS effort_ctrl
-  DESTINATION lib/${PROJECT_NAME}
-)
+# install(TARGETS effort_ctrl
+#   DESTINATION lib/${PROJECT_NAME}
+# )
 
 ament_package()

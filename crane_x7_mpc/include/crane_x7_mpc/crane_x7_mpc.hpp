@@ -1,0 +1,5 @@
+#ifndef CRANE_X7_MPC__CRANE_X7_MPC_HPP_
+#define CRANE_X7_MPC__CRANE_X7_MPC_HPP_
+
+
+#endif  // CRANE_X7_MPC__CRANE_X7_MPC_HPP_

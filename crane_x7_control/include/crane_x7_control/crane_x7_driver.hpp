@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <cmath>
 
 class CraneX7Driver {
 public:
@@ -18,9 +19,8 @@ public:
 
   bool torque_enable(const bool enable);
   bool write_goal_joint_positions(const std::vector<double>& goal_positions);
-  bool write_goal_speed_rpm(const uint8_t dxl_id, const double speed_rpm);
-  bool write_goal_speed_rpms(const std::vector<double>& speed_rpms);
-  bool write_goal_effort(const uint8_t dxl_id, const double effort);
+  bool write_goal_speed_rpm(const std::vector<double>& goal_speed_rpm);
+  bool write_goal_effort(const std::vector<double>& goal_effort);
   bool read_present_joint_positions(std::vector<double>& joint_positions);
   bool read_present_joint_speeds(std::vector<double>& joint_speeds);
   bool read_present_joint_currents(std::vector<double>& joint_loads);
@@ -33,16 +33,6 @@ public:
   static constexpr int OPE_EXT_POS_MODE  = 4;
   static constexpr int OPE_CURR_POS_MODE = 5;
   static constexpr int OPE_PWM_MODE      = 16;
-
-  static constexpr std::string KEY_DXL_PORT       = "dynamixel_port";
-  static constexpr std::string KEY_PORTNAME       = "/port_name";
-  static constexpr std::string KEY_BAUDRATE       = "/baud_rate";
-  static constexpr std::string KEY_JOINTS         = "/joints";
-  static constexpr std::string KEY_JPARAM_ID      = "/id";
-  static constexpr std::string KEY_JPARAM_CENTER  = "/center";
-  static constexpr std::string KEY_JPARAM_HOME    = "/home";
-  static constexpr std::string KEY_JPARAM_EFFCNST = "/effort_const";
-  static constexpr std::string KEY_JPARAM_OPEMODE = "/mode";
 
   static constexpr int DEFAULT_CENTER = 2048;
   static constexpr double DEFAULT_EFF_CNST = 1.79;
@@ -63,13 +53,15 @@ public:
 
   // Dynamixel XM430-W350 and XM540-W270 address table
   // Ref: https://emanual.robotis.com/docs/en/dxl/x/xm430-w350/ and https://emanual.robotis.com/docs/en/dxl/x/xm540-w270/ 
-  static constexpr uint16_t ADDR_TORQUE_ENABLE = 64;
-  static constexpr uint16_t ADDR_GOAL_POSITION = 116;
-  static constexpr uint16_t ADDR_PRESENT_POSITION = 132;
-  static constexpr uint16_t ADDR_PRESENT_VELOCITY = 128;
-  static constexpr uint16_t ADDR_PRESENT_CURRENT = 126;
+  static constexpr uint16_t ADDR_TORQUE_ENABLE         = 64;
+  static constexpr uint16_t ADDR_GOAL_POSITION         = 116;
+  static constexpr uint16_t ADDR_GOAL_VELOCITY         = 104;
+  static constexpr uint16_t ADDR_GOAL_CURRENT          = 102;
+  static constexpr uint16_t ADDR_PRESENT_POSITION      = 132;
+  static constexpr uint16_t ADDR_PRESENT_VELOCITY      = 128;
+  static constexpr uint16_t ADDR_PRESENT_CURRENT       = 126;
   static constexpr uint16_t ADDR_PRESENT_INPUT_VOLTAGE = 144;
-  static constexpr uint16_t ADDR_PRESENT_TEMPERATURE = 146;
+  static constexpr uint16_t ADDR_PRESENT_TEMPERATURE   = 146;
 
 private:
   std::shared_ptr<dynamixel::PortHandler> dxl_port_handler_;
@@ -97,7 +89,7 @@ private:
   }
 
   bool read_word_data_from_each_joints(const uint16_t address, 
-                                        std::vector<uint16_t>& buffer) {
+                                       std::vector<uint16_t>& buffer) {
     bool retval = true;
     for (auto dxl_id : id_list_) {
       uint8_t dxl_error = 0;
@@ -141,7 +133,7 @@ private:
     return (speed * 0.229 * 0.1047);
   }
 
-  double dxl_effort_to_current(const uint16_t effort) const {
+  uint16_t dxl_effort_to_current(const double effort) const {
     return (effort / DEFAULT_EFF_CNST / 0.001 / DXL_CURRENT_UNIT);
   }
 

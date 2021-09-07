@@ -9,15 +9,21 @@
 
 namespace crane_x7_control {
 
-CraneX7Hardware::CraneX7Hardware(const ControlMode control_mode)
+CraneX7Hardware::CraneX7Hardware()
   : hardware_interface::BaseInterface<hardware_interface::SystemInterface>(),
-    control_mode_(control_mode) {
+    control_mode_(ControlMode::Position) {
 }
 
 
 CraneX7Hardware::~CraneX7Hardware() {
   driver_->torque_enable(false);
   driver_->close_port();
+}
+
+
+return_type CraneX7Hardware::set_control_mode(const ControlMode control_mode) {
+  control_mode_ = control_mode;
+  return return_type::OK;
 }
 
 
@@ -51,6 +57,7 @@ return_type CraneX7Hardware::configure(const hardware_interface::HardwareInfo& i
   hw_effort_commands_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
   hw_position_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
   hw_velocity_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
+  hw_effort_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
   hw_voltage_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
   hw_temperature_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
   // Open a crane_x7_driver
@@ -142,7 +149,7 @@ CraneX7Hardware::export_command_interfaces() {
       command_interfaces.emplace_back(
         hardware_interface::CommandInterface(info_.joints[i].name, 
                                             hardware_interface::HW_IF_EFFORT, 
-                                            &hw_velocity_commands_[i])
+                                            &hw_effort_commands_[i])
       );
     }
   }
