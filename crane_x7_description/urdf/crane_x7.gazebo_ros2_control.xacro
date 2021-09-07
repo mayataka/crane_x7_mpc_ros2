@@ -21,8 +21,8 @@
 
       <joint name="${name_joint_1}">
         <command_interface name="${control_mode}">
-          <param name="min">"-10.0"</param>
-          <param name="max">"10.0"</param>
+          <param name="min">-10.0</param>
+          <param name="max">10.0</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
@@ -31,8 +31,8 @@
 
       <joint name="${name_joint_2}">
         <command_interface name="${control_mode}">
-          <param name="min">"-10.0"</param>
-          <param name="max">"10.0"</param>
+          <param name="min">-10.0</param>
+          <param name="max">10.0</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
@@ -41,8 +41,8 @@
 
       <joint name="${name_joint_3}">
         <command_interface name="${control_mode}">
-          <param name="min">"-4.0"</param>
-          <param name="max">"4.0"</param>
+          <param name="min">-4.0</param>
+          <param name="max">4.0</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
@@ -51,8 +51,8 @@
 
       <joint name="${name_joint_4}">
         <command_interface name="${control_mode}">
-          <param name="min">"-4.0"</param>
-          <param name="max">"4.0"</param>
+          <param name="min">-4.0</param>
+          <param name="max">4.0</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
@@ -61,8 +61,8 @@
 
       <joint name="${name_joint_5}">
         <command_interface name="${control_mode}">
-          <param name="min">"-4.0"</param>
-          <param name="max">"4.0"</param>
+          <param name="min">-4.0</param>
+          <param name="max">4.0</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
@@ -71,8 +71,8 @@
 
       <joint name="${name_joint_6}">
         <command_interface name="${control_mode}">
-          <param name="min">"-4.0"</param>
-          <param name="max">"4.0"</param>
+          <param name="min">-4.0</param>
+          <param name="max">4.0</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
@@ -81,8 +81,8 @@
 
       <joint name="${name_joint_7}">
         <command_interface name="${control_mode}">
-          <param name="min">"-4.0"</param>
-          <param name="max">"4.0"</param>
+          <param name="min">-4.0</param>
+          <param name="max">4.0</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
@@ -91,8 +91,8 @@
 
       <joint name="${name_joint_hand}">
         <command_interface name="${control_mode}">
-          <param name="min">"-4.0"</param>
-          <param name="max">"4.0"</param>
+          <param name="min">-4.0</param>
+          <param name="max">4.0</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>

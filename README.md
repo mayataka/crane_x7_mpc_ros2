@@ -1,11 +1,11 @@
 # CRANE_X7_MPC_ROS2
 
-- build the Docker 
+Build and run an example with Docker:
 ```
 docker build -t crane_x7_mpc_ros2 .
+docker run -it --rm --name crane_x7_mpc_ros2 --net host crane_x7_mpc_ros2 
 ```
-
-- run Docker
+You can visualize the simulator via another terminal
 ```
-docker run -it --rm --name crane_x7_mpc_ros2 --net host crane_x7_mpc_ros2 ros2 launch crane_x7_description_ros2 display.launch.py 
+gzclient
 ```

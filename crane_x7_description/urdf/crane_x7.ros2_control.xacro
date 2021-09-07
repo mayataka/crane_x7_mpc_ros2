@@ -120,7 +120,7 @@
       </joint>
 
       <joint name="${name_joint_hand}">
-        <command_interface name="${control_mode}">
+        <command_interface name="effort">
           <param name="min">${vmax}</param>
           <param name="max">${vmin}</param>
         </command_interface>

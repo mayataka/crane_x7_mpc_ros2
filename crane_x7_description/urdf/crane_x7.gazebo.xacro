@@ -10,15 +10,14 @@
             name_link_5
             name_link_6
             name_link_hand">
-<!-- 
+
     <gazebo>
       <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
         <robot_sim_type>gazebo_ros2_control/GazeboSystem</robot_sim_type>
         <parameters>$(find crane_x7_control)/config/crane_x7_controllers.yaml</parameters>
       </plugin>
-    </gazebo> -->
+    </gazebo>
 
-<!-- 
     <gazebo reference="${name_link_base}">
       <material>Gazebo/Red</material>
     </gazebo>
@@ -49,7 +48,7 @@
 
     <gazebo reference="${name_link_hand}">
       <material>Gazebo/Red</material>
-    </gazebo> -->
+    </gazebo>
 
   </xacro:macro>
 </robot>

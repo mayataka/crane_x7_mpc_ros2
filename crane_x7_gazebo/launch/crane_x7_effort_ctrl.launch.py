@@ -7,12 +7,13 @@ from launch.actions import ExecuteProcess, IncludeLaunchDescription, RegisterEve
 from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
-from launch.substitutions import Command, LaunchConfiguration
-
-import xacro
+from launch.substitutions import Command
 
 
 def generate_launch_description():
+    # gazebo_ros_factory =  ExecuteProcess(
+    #     cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_factory.so'],
+    #     output='screen')
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
@@ -22,26 +23,25 @@ def generate_launch_description():
         get_package_share_directory('crane_x7_description'))
     xacro_file = os.path.join(crane_x7_description_path,
                               'urdf', 'crane_x7.urdf.xacro')
-
-    # doc = xacro.parse(open(xacro_file))
-    # xacro.process_doc(doc)
-    # params = {'robot_description': doc.toxml()}
     params = {'robot_description': Command(['xacro ', xacro_file, ' use_gazebo:=true'])}
 
     node_robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
+        name='robot_state_publisher',
         output='screen',
         parameters=[params]
     )
 
     spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
                         arguments=['-topic', 'robot_description',
-                                   '-entity', 'crane_x7',
-                                   '-x', '0', '-y', '0', '-z', '0'],
+                                   '-entity', 'crane_x7'],
+                        # arguments=['-topic', 'robot_description',
+                        #            '-entity', 'crane_x7',
+                        #            '-x', '0', '-y', '0', '-z', '0'],
                         output='screen')
 
-    load_joint_state_controller = ExecuteProcess(
+    load_joint_state_broadcaster = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
              'joint_state_broadcaster'],
         shell=True,
@@ -58,7 +58,7 @@ def generate_launch_description():
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=spawn_entity,
-                on_exit=[load_joint_state_controller],
+                on_exit=[load_joint_state_broadcaster],
             )
         ),
         # RegisterEventHandler(

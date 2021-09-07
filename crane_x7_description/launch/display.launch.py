@@ -4,17 +4,14 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-
-import xacro
+from launch.substitutions import Command
 
 
 def generate_launch_description():
     pkg_share = FindPackageShare('crane_x7_description').find('crane_x7_description')
     urdf_dir = os.path.join(pkg_share, 'urdf')
     xacro_file = os.path.join(urdf_dir, 'crane_x7.urdf.xacro')
-    doc = xacro.process_file(xacro_file)
-    robot_desc = doc.toprettyxml(indent='  ')
-    params = {'robot_description': robot_desc}
+    params = {'robot_description': Command(['xacro ', xacro_file, ' use_gazebo:=false'])}
 
     rsp = Node(package='robot_state_publisher',
                executable='robot_state_publisher',

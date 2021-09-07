@@ -54,7 +54,7 @@
   <xacro:property name="NAME_JOINT_5" value="crane_x7_lower_arm_fixed_part_joint"/>
   <xacro:property name="NAME_JOINT_6" value="crane_x7_lower_arm_revolute_part_joint"/>
   <xacro:property name="NAME_JOINT_7" value="crane_x7_wrist_joint"/>
-  <xacro:property name="NAME_JOINT_HAND" value="crane_x7_joint_hand"/>
+  <xacro:property name="NAME_JOINT_HAND" value="crane_x7_gripper_finger_a_joint_trans"/>
 
   <xacro:property name="NAME_LINK_BASE" value="crane_x7_shoulder_fixed_part_link"/>
   <xacro:property name="NAME_LINK_1" value="crane_x7_shoulder_revolute_part_link"/>
@@ -67,7 +67,7 @@
 
   <xacro:unless value="$(arg use_gazebo)">
     <xacro:crane_x7_ros2_control_settings 
-      name="crane_plus"
+      name="crane_x7"
       name_joint_1="${NAME_JOINT_1}"
       name_joint_2="${NAME_JOINT_2}"
       name_joint_3="${NAME_JOINT_3}"
@@ -89,7 +89,7 @@
       name_link_6="${NAME_LINK_6}"
       name_link_hand="${NAME_LINK_HAND}"/>
     <xacro:crane_x7_gazebo_ros2_control_settings 
-      name="crane_plus"
+      name="crane_x7"
       name_joint_1="${NAME_JOINT_1}"
       name_joint_2="${NAME_JOINT_2}"
       name_joint_3="${NAME_JOINT_3}"

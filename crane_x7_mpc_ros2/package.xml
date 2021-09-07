@@ -1,25 +1,25 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>crane_x7_description</name>
+  <name>crane_x7_mpc_ros2</name>
   <version>0.0.1</version>
-  <description>CRANE-X7 description package for ROS2</description>
+  <description>ROS 2 MPC package for CRANE-X7</description>
   <maintainer email="katayama.25w@st.kyoto-u.ac.jp">Sotaro Katayama</maintainer>
 
   <license>TODO</license>
 
   <author email="katayama.25w@st.kyoto-u.ac.jp">Sotaro Katayama</author>
 
-  <depend>gazebo_ros2_control</depend>
-  <depend>joint_state_publisher_gui</depend>
-  <depend>robot_state_publisher</depend>
-  <depend>rviz2</depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>crane_x7_control</exec_depend>
+  <exec_depend>crane_x7_description</exec_depend>
+  <exec_depend>crane_x7_gazebo</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
-    <!-- <gazebo_ros gazebo_model_path="${prefix}/../"/> -->
   </export>
 </package>
