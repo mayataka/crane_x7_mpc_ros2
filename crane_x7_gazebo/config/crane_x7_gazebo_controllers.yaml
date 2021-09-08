@@ -5,10 +5,10 @@ controller_manager:
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-    joint_effort_controllers:
-      type: effort_controllers/JointGroupEffortController
+    joint_velocity_controller:
+      type: velocity_controllers/JointGroupVelocityController
 
-joint_effort_controllers:
+joint_velocity_controller:
   ros__parameters:
     joints:
       - crane_x7_shoulder_fixed_part_pan_joint
@@ -19,8 +19,7 @@ joint_effort_controllers:
       - crane_x7_lower_arm_revolute_part_joint
       - crane_x7_wrist_joint
     command_interfaces:
-      - effort
+      - velocity
     state_interfaces:
       - position
       - velocity
-      - effort

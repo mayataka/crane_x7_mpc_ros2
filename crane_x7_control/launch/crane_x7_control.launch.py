@@ -22,31 +22,32 @@ def generate_launch_description():
     rviz_config= os.path.join(crane_x7_description_path,
                               'config', 'display.rviz')
 
+    spawn_robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        parameters=[robot_description],
+        output='screen'
+    )
+
     spawn_controller_manager = Node(
         package='controller_manager', 
         executable='ros2_control_node', 
         parameters=[robot_description, crane_x7_controllers_config], 
         output={'stdout': 'screen', 
-                'stderr': 'screen', },
+                'stderr': 'screen', 
+        },
     )
     spawn_joint_state_broadcaster = Node(
-        package="controller_manager",
-        executable="spawner.py",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        package='controller_manager',
+        executable='spawner.py',
+        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
     )
     # spawn_joint_trajectory_controller = Node(
     #     package="controller_manager",
     #     executable="spawner.py",
     #     arguments=["joint_trajectory_controller", "-c", "/controller_manager"],
     # )
-
-    spawn_robot_state_publisher = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        name="robot_state_publisher",
-        parameters=[robot_description],
-        output="screen"
-    )
 
     rviz = Node(
         package='rviz2',

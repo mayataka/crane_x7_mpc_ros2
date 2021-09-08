@@ -13,7 +13,7 @@
 
     <gazebo>
       <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-        <!-- <robot_sim_type>gazebo_ros2_control/GazeboSystem</robot_sim_type> -->
+        <robot_sim_type>gazebo_ros2_control/GazeboSystem</robot_sim_type>
         <parameters>$(find crane_x7_gazebo)/config/crane_x7_gazebo_controllers.yaml</parameters>
       </plugin>
     </gazebo>

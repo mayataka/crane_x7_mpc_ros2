@@ -16,9 +16,13 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(robot_state_publisher REQUIRED)
+find_package(xacro REQUIRED)
+find_package(urdf REQUIRED)
+find_package(rviz2 REQUIRED)
+find_package(ros2_control REQUIRED)
+find_package(ros2_controllers REQUIRED)
 find_package(dynamixel_hardware REQUIRED)
-find_package(pluginlib REQUIRED)
-find_package(rclcpp REQUIRED)
 
 install(DIRECTORY
   config

@@ -26,4 +26,4 @@ RUN cd /home/ros2_ws \
 COPY ./.docker/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ros2 launch crane_x7_gazebo crane_x7_effort_ctrl.launch.py gui:=false
+CMD ros2 launch crane_x7_gazebo crane_x7_gazebo.launch.py gui:=false

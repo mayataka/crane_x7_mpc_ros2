@@ -1,4 +1,4 @@
-// Copyright 2017 Open Source Robotics Foundation, Inc.
+// Copyright 2021 Sotaro Katayama <katayama.25w@st.kyoto-u.ac.jp>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,38 +19,38 @@
  * library cannot have, but the consuming code must have inorder to link.
  */
 
-#ifndef CRANE_X7_CONTROL__VISIBILITY_CONTROL_H_
-#define CRANE_X7_CONTROL__VISIBILITY_CONTROL_H_
+#ifndef CRANE_X7_MPC__VISIBLITY_CONTROL_H_
+#define CRANE_X7_MPC__VISIBLITY_CONTROL_H_
 
 // This logic was borrowed (then namespaced) from the examples on the gcc wiki:
 //     https://gcc.gnu.org/wiki/Visibility
 
 #if defined _WIN32 || defined __CYGWIN__
 #ifdef __GNUC__
-#define CRANE_X7_CONTROL_EXPORT __attribute__((dllexport))
-#define CRANE_X7_CONTROL_IMPORT __attribute__((dllimport))
+#define CRANE_X7_MPC_EXPORT __attribute__((dllexport))
+#define CRANE_X7_MPC_IMPORT __attribute__((dllimport))
 #else
-#define CRANE_X7_CONTROL_EXPORT __declspec(dllexport)
-#define CRANE_X7_CONTROL_IMPORT __declspec(dllimport)
+#define CRANE_X7_MPC_EXPORT __declspec(dllexport)
+#define CRANE_X7_MPC_IMPORT __declspec(dllimport)
 #endif
-#ifdef CRANE_X7_CONTROL_BUILDING_DLL
-#define CRANE_X7_CONTROL_PUBLIC CRANE_X7_CONTROL_EXPORT
+#ifdef CRANE_X7_MPC_BUILDING_DLL
+#define CRANE_X7_MPC_PUBLIC CRANE_X7_MPC_EXPORT
 #else
-#define CRANE_X7_CONTROL_PUBLIC CRANE_X7_CONTROL_IMPORT
+#define CRANE_X7_MPC_PUBLIC CRANE_X7_MPC_IMPORT
 #endif
-#define CRANE_X7_CONTROL_PUBLIC_TYPE CRANE_X7_CONTROL_PUBLIC
-#define CRANE_X7_CONTROL_LOCAL
+#define CRANE_X7_MPC_PUBLIC_TYPE CRANE_X7_MPC_PUBLIC
+#define CRANE_X7_MPC_LOCAL
 #else
-#define CRANE_X7_CONTROL_EXPORT __attribute__((visibility("default")))
-#define CRANE_X7_CONTROL_IMPORT
+#define CRANE_X7_MPC_EXPORT __attribute__((visibility("default")))
+#define CRANE_X7_MPC_IMPORT
 #if __GNUC__ >= 4
-#define CRANE_X7_CONTROL_PUBLIC __attribute__((visibility("default")))
-#define CRANE_X7_CONTROL_LOCAL __attribute__((visibility("hidden")))
+#define CRANE_X7_MPC_PUBLIC __attribute__((visibility("default")))
+#define CRANE_X7_MPC_LOCAL __attribute__((visibility("hidden")))
 #else
-#define CRANE_X7_CONTROL_PUBLIC
-#define CRANE_X7_CONTROL_LOCAL
+#define CRANE_X7_MPC_PUBLIC
+#define CRANE_X7_MPC_LOCAL
 #endif
-#define CRANE_X7_CONTROL_PUBLIC_TYPE
+#define CRANE_X7_MPC_PUBLIC_TYPE
 #endif
 
-#endif  // CRANE_X7_CONTROL__VISIBILITY_CONTROL_H_
+#endif  // CRANE_X7_MPC__VISIBLITY_CONTROL_H_

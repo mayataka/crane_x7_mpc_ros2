@@ -27,30 +27,12 @@ def generate_launch_description():
         'config', 'crane_x7_gazebo_controllers.yaml'
     )
 
-    spawn_controller_manager = Node(
-        package='controller_manager', 
-        executable='ros2_control_node', 
-        parameters=[robot_description, crane_x7_gazebo_controllers_config], 
-        output={'stdout': 'screen', 
-                'stderr': 'screen', },
-    )
-    spawn_joint_state_broadcaster = Node(
-        package="controller_manager",
-        executable="spawner.py",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
-    )
-    # spawn_joint_effort_controllers = Node(
-    #     package="controller_manager",
-    #     executable="spawner.py",
-    #     arguments=["joint_effort_controllers", "-c", "/controller_manager"],
-    # )
-
     spawn_robot_state_publisher = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        name="robot_state_publisher",
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
         parameters=[robot_description],
-        output="screen"
+        output='screen'
     )
 
     # Gazebo's robot entity
@@ -61,6 +43,25 @@ def generate_launch_description():
                    '-x', '0', '-y', '0', '-z', '0'], 
         output='screen'
     )
+
+    spawn_controller_manager = Node(
+        package='controller_manager', 
+        executable='ros2_control_node', 
+        parameters=[robot_description, crane_x7_gazebo_controllers_config], 
+        output={'stdout': 'screen', 
+                'stderr': 'screen', 
+        },
+    )
+    spawn_joint_state_broadcaster = Node(
+        package='controller_manager',
+        executable='spawner.py',
+        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
+    )
+    # spawn_joint_effort_controller = Node(
+    #     package='controller_manager',
+    #     executable='spawner.py',
+    #     arguments=['joint_effort_controller', '-c', '/controller_manager'],
+    # )
 
     return LaunchDescription([
         # RegisterEventHandler(
@@ -76,9 +77,9 @@ def generate_launch_description():
         #     )
         # ),
         gazebo,
-        spawn_controller_manager,
-        spawn_joint_state_broadcaster,
-        # spawn_joint_effort_controllers,
         spawn_robot_state_publisher,
         spawn_entity,
+        spawn_controller_manager,
+        spawn_joint_state_broadcaster,
+        # spawn_joint_effort_controller,
     ])
