@@ -10,9 +10,16 @@
 
   <author email="katayama.25w@st.kyoto-u.ac.jp">Sotaro Katayama</author>
 
+  <depend>ament_index_python</depend>
+
+  <depend>gazebo_ros_pkgs</depend>
   <depend>gazebo_ros2_control</depend>
+  <depend>ros2_controllers</depend>
   <depend>joint_state_publisher_gui</depend>
   <depend>robot_state_publisher</depend>
+  <depend>launch</depend>
+  <depend>launch_ros</depend>
+  <depend>xacro</depend>
   <depend>rviz2</depend>
 
   <test_depend>ament_lint_auto</test_depend>

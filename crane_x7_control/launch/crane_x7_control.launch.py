@@ -8,6 +8,7 @@ from launch.substitutions import Command
 
 
 def generate_launch_description():
+    # Get URDF via xacro
     crane_x7_description_path = os.path.join(
         get_package_share_directory('crane_x7_description'))
     xacro_file = os.path.join(crane_x7_description_path,

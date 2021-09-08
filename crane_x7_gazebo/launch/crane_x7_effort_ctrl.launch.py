@@ -1,7 +1,6 @@
 import os
 
 from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -70,7 +69,7 @@ def generate_launch_description():
     # )
 
     # spawn_effort_controller = ExecuteProcess(
-    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start', 'effort_controllers'],
+    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start', 'joint_effort_controllers'],
     #     shell=True,
     #     output='screen'
     # )
