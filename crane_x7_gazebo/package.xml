@@ -19,6 +19,7 @@
   <depend>controller_manager</depend>
   <depend>gazebo_ros_pkgs</depend>
   <depend>gazebo_ros2_control</depend>
+  <depend>ros2_control</depend>
   <depend>ros2_controllers</depend>
   <depend>ros2controlcli</depend>
   <depend>launch</depend>

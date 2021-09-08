@@ -4,9 +4,6 @@
   <xacro:include filename="$(find crane_x7_description)/urdf/crane_x7_mounting_plate.xacro"/>
   <xacro:include filename="$(find crane_x7_description)/urdf/crane_x7_arm.xacro"/>
   <xacro:include filename="$(find crane_x7_description)/urdf/crane_x7_wide_two_finger_gripper.xacro"/>
-  <xacro:include filename="$(find crane_x7_description)/urdf/crane_x7.ros2_control.xacro"/>
-  <xacro:include filename="$(find crane_x7_description)/urdf/crane_x7.gazebo.xacro"/>
-  <xacro:include filename="$(find crane_x7_description)/urdf/crane_x7.gazebo_ros2_control.xacro"/>
 
   <material name="black">
     <color rgba="0.2 0.2 0.2 1.0"/>

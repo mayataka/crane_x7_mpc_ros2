@@ -1,0 +1,11 @@
+[submodule "dynamixel_control"]
+	path = dynamixel_control
+	url = https://github.com/youtalk/dynamixel_control.git
+[submodule "dynamixel-workbench"]
+	path = dynamixel-workbench
+	url = https://github.com/ROBOTIS-GIT/dynamixel-workbench.git
+	branch = ros2
+[submodule "dynamixel-workbench-msgs"]
+	path = dynamixel-workbench-msgs
+	url = https://github.com/ROBOTIS-GIT/dynamixel-workbench-msgs.git
+	branch = ros2

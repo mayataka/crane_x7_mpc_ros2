@@ -10,10 +10,10 @@ from launch.substitutions import Command
 
 def generate_launch_description():
     gazebo = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory('gazebo_ros'), 'launch'), 
-                    '/gazebo.launch.py']),
-             )
+        PythonLaunchDescriptionSource([os.path.join(
+            get_package_share_directory('gazebo_ros'), 'launch'), 
+            '/gazebo.launch.py']),
+    )
 
     # Get URDF via xacro
     crane_x7_description_path = os.path.join(
@@ -22,13 +22,35 @@ def generate_launch_description():
                               'urdf', 'crane_x7.urdf.xacro')
     robot_description = {'robot_description': Command(['xacro ', xacro_file, ' use_gazebo:=true'])}
 
-    # Robot state publisher
-    node_robot_state_publisher = Node(
-        package='robot_state_publisher', 
-        executable='robot_state_publisher', 
-        name='robot_state_publisher', 
-        output='screen', 
-        parameters=[robot_description]
+    crane_x7_gazebo_controllers_config = os.path.join(
+        get_package_share_directory('crane_x7_gazebo'),
+        'config', 'crane_x7_gazebo_controllers.yaml'
+    )
+
+    spawn_controller_manager = Node(
+        package='controller_manager', 
+        executable='ros2_control_node', 
+        parameters=[robot_description, crane_x7_gazebo_controllers_config], 
+        output={'stdout': 'screen', 
+                'stderr': 'screen', },
+    )
+    spawn_joint_state_broadcaster = Node(
+        package="controller_manager",
+        executable="spawner.py",
+        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+    )
+    # spawn_joint_effort_controllers = Node(
+    #     package="controller_manager",
+    #     executable="spawner.py",
+    #     arguments=["joint_effort_controllers", "-c", "/controller_manager"],
+    # )
+
+    spawn_robot_state_publisher = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        name="robot_state_publisher",
+        parameters=[robot_description],
+        output="screen"
     )
 
     # Gazebo's robot entity
@@ -39,40 +61,6 @@ def generate_launch_description():
                    '-x', '0', '-y', '0', '-z', '0'], 
         output='screen'
     )
-
-    # controllers
-    crane_x7_gazebo_controllers_path = os.path.join(
-        get_package_share_directory('crane_x7_gazebo'),
-        'config',
-        'crane_x7_gazebo_controllers.yaml'
-    )
-    spawn_controller_manager = Node(
-        package='controller_manager',
-        executable='ros2_control_node',
-        parameters=[robot_description, crane_x7_gazebo_controllers_path],
-        output={
-            "stdout": "screen",
-            "stderr": "screen",
-        },
-    )
-    spawn_joint_state_broadcaster = Node(
-        package='controller_manager',
-        executable='spawner.py',
-        arguments=['joint_state_broadcaster']
-    )
-
-    # spawn_joint_state_broadcaster = ExecuteProcess(
-    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
-    #          'joint_state_broadcaster'],
-    #     shell=True,
-    #     output='screen'
-    # )
-
-    # spawn_effort_controller = ExecuteProcess(
-    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start', 'joint_effort_controllers'],
-    #     shell=True,
-    #     output='screen'
-    # )
 
     return LaunchDescription([
         # RegisterEventHandler(
@@ -88,8 +76,9 @@ def generate_launch_description():
         #     )
         # ),
         gazebo,
-        node_robot_state_publisher,
-        spawn_entity,
         spawn_controller_manager,
-        # spawn_joint_state_broadcaster,
+        spawn_joint_state_broadcaster,
+        # spawn_joint_effort_controllers,
+        spawn_robot_state_publisher,
+        spawn_entity,
     ])

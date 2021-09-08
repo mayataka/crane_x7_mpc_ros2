@@ -12,123 +12,111 @@
             name_joint_7
             name_joint_hand">
 
-    <xacro:property name="control_mode" value="velocity"/>
-    <xacro:property name="vmax" value="4.81710873"/>
-    <xacro:property name="vmin" value="-4.81710873"/>
-
     <ros2_control name="${name}" type="system">
       <hardware>
-        <plugin>crane_x7_hardware/CraneX7Hardware</plugin>
-        <param name="port_name">/dev/ttyUSB0</param>
-        <param name="baudrate">3000000</param>
-        <param name="timeout_seconds">5.0</param>
-        <param name="read_velocities">0</param>
-        <param name="read_loads">0</param>
-        <param name="read_voltages">0</param>
-        <param name="read_temperatures">0</param>
+        <plugin>dynamixel_hardware/DynamixelHardware</plugin>
+        <param name="usb_port">/dev/ttyUSB0</param>
+        <param name="baud_rate">3000000</param>
+        <param name="joint_ids">2, 3, 4, 5, 6, 7, 8, 9</param>
+        <!-- <param name="use_dummy">true</param> -->
       </hardware>
 
+      <xacro:property name="vmax" value="4.81710873"/>
+      <xacro:property name="vmin" value="-4.81710873"/>
+
       <joint name="${name_joint_1}">
-        <command_interface name="${control_mode}">
+        <command_interface name="position"/>
+        <command_interface name="velocity">
           <param name="min">${vmax}</param>
           <param name="max">${vmin}</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <state_interface name="load"/>
-        <state_interface name="voltage"/>
-        <state_interface name="temperature"/>
+        <state_interface name="effort"/>
         <param name="dxl_id">2</param>
       </joint>
 
       <joint name="${name_joint_2}">
-        <command_interface name="${control_mode}">
+        <command_interface name="position"/>
+        <command_interface name="velocity">
           <param name="min">${vmax}</param>
           <param name="max">${vmin}</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <state_interface name="load"/>
-        <state_interface name="voltage"/>
-        <state_interface name="temperature"/>
+        <state_interface name="effort"/>
         <param name="dxl_id">3</param>
       </joint>
 
       <joint name="${name_joint_3}">
-        <command_interface name="${control_mode}">
+        <command_interface name="position"/>
+        <command_interface name="velocity">
           <param name="min">${vmax}</param>
           <param name="max">${vmin}</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <state_interface name="load"/>
-        <state_interface name="voltage"/>
-        <state_interface name="temperature"/>
+        <state_interface name="effort"/>
         <param name="dxl_id">4</param>
       </joint>
 
       <joint name="${name_joint_4}">
-        <command_interface name="${control_mode}">
+        <command_interface name="position"/>
+        <command_interface name="velocity">
           <param name="min">${vmax}</param>
           <param name="max">${vmin}</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <state_interface name="load"/>
-        <state_interface name="voltage"/>
-        <state_interface name="temperature"/>
+        <state_interface name="effort"/>
         <param name="dxl_id">5</param>
       </joint>
 
       <joint name="${name_joint_5}">
-        <command_interface name="${control_mode}">
+        <command_interface name="position"/>
+        <command_interface name="velocity">
           <param name="min">${vmax}</param>
           <param name="max">${vmin}</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <state_interface name="load"/>
-        <state_interface name="voltage"/>
-        <state_interface name="temperature"/>
+        <state_interface name="effort"/>
         <param name="dxl_id">6</param>
       </joint>
 
       <joint name="${name_joint_6}">
-        <command_interface name="${control_mode}">
+        <command_interface name="position"/>
+        <command_interface name="velocity">
           <param name="min">${vmax}</param>
           <param name="max">${vmin}</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <state_interface name="load"/>
-        <state_interface name="voltage"/>
-        <state_interface name="temperature"/>
+        <state_interface name="effort"/>
         <param name="dxl_id">7</param>
       </joint>
 
       <joint name="${name_joint_7}">
-        <command_interface name="${control_mode}">
+        <command_interface name="position"/>
+        <command_interface name="velocity">
           <param name="min">${vmax}</param>
           <param name="max">${vmin}</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <state_interface name="load"/>
-        <state_interface name="voltage"/>
-        <state_interface name="temperature"/>
+        <state_interface name="effort"/>
         <param name="dxl_id">8</param>
       </joint>
 
       <joint name="${name_joint_hand}">
-        <command_interface name="effort">
+        <command_interface name="position"/>
+        <command_interface name="velocity">
           <param name="min">${vmax}</param>
           <param name="max">${vmin}</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <state_interface name="load"/>
-        <state_interface name="voltage"/>
-        <state_interface name="temperature"/>
+        <state_interface name="effort"/>
         <param name="dxl_id">9</param>
       </joint>
 

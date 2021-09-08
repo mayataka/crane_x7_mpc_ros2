@@ -15,10 +15,13 @@ if(NOT WIN32)
 endif()
 
 find_package(ament_cmake REQUIRED)
-# find_package(control_msgs REQUIRED)
-# find_package(rclcpp REQUIRED)
-# find_package(rclcpp_action REQUIRED)
-# find_package(std_msgs REQUIRED)
+find_package(robot_state_publisher REQUIRED)
+find_package(xacro REQUIRED)
+find_package(urdf REQUIRED)
+find_package(rviz2 REQUIRED)
+find_package(ros2_control REQUIRED)
+find_package(ros2_controllers REQUIRED)
+find_package(dynamixel_hardware REQUIRED)
 
 install(DIRECTORY
   launch
@@ -26,35 +29,11 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
-# add_executable(example_position examples/example_position.cpp)
-# ament_target_dependencies(example_position
-#   rclcpp
-#   rclcpp_action
-#   control_msgs
-# )
-
-# add_executable(example_velocity examples/example_velocity.cpp)
-# ament_target_dependencies(example_velocity
-#   rclcpp
-#   std_msgs
-# )
-
-# add_executable(effort_ctrl src/effort_ctrl.cpp)
-# ament_target_dependencies(effort_ctrl
-#   rclcpp
-#   std_msgs
-# )
-
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   find_package(ament_lint_auto REQUIRED)
 
   ament_lint_auto_find_test_dependencies()
 endif()
-
-## Install
-# install(TARGETS effort_ctrl
-#   DESTINATION lib/${PROJECT_NAME}
-# )
 
 ament_package()

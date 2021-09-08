@@ -14,7 +14,7 @@
 
   <!-- <exec_depend>crane_x7_mpc</exec_depend> -->
   <exec_depend>crane_x7_description</exec_depend>
-  <!-- <exec_depend>crane_x7_control</exec_depend> -->
+  <exec_depend>crane_x7_control</exec_depend>
   <exec_depend>crane_x7_gazebo</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>

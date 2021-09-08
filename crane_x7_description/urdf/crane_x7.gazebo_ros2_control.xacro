@@ -12,12 +12,12 @@
             name_joint_7
             name_joint_hand">
 
-    <xacro:property name="control_mode" value="effort"/>
-
     <ros2_control name="${name}" type="system">
       <hardware>
         <plugin>gazebo_ros2_control/GazeboSystem</plugin>
       </hardware>
+
+      <xacro:property name="control_mode" value="effort"/>
 
       <joint name="${name_joint_1}">
         <command_interface name="${control_mode}">
