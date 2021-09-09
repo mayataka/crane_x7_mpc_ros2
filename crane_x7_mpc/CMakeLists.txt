@@ -15,57 +15,61 @@ if(NOT WIN32)
 endif()
 
 find_package(ament_cmake REQUIRED)
-# find_package(Eigen3 REQUIRED)
-# find_package(idocp REQUIRED)
-# find_package(rclcpp REQUIRED)
-# find_package(rclcpp_components REQUIRED)
-# find_package(std_msgs REQUIRED)
-# find_package(sensor_msgs REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(pinocchio REQUIRED)
+find_package(idocp REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
-# set(dependencies
-#     Eigen3
-#     idocp
-#     rclcpp
-#     rclcpp_components
-#     std_msgs
-#     sensor_msgs)
+set(dependencies
+  Eigen3
+  idocp
+  rclcpp
+  std_msgs
+  sensor_msgs
+)
 
-# set(CRANE_X7_MPC_LIB crane_x7_mpc)
-# add_library(
-#   ${CRANE_X7_MPC_LIB} 
-#   SHARED
-#   src/crane_x7_mpc.cpp
-# )
-# target_include_directories(
-#   ${CRANE_X7_MPC_LIB}
-#   PUBLIC
-#   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#   $<INSTALL_INTERFACE:include>
-# )
-# ament_target_dependencies(${CRANE_X7_MPC_LIB} ${dependencies})
+add_library(
+  ${PROJECT_NAME} 
+  SHARED
+  src/crane_x7_mpc.cpp
+  src/crane_x7_mpc_main.cpp
+)
+target_include_directories(
+  ${PROJECT_NAME} 
+  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  PRIVATE
+  ${EIGEN3_INCLUDE_DIR}
+  ${IDOCP_INCLUDE_DIR}
+  ${PINOCCHIO_INCLUDE_DIRS}
+)
+ament_target_dependencies(
+  ${PROJECT_NAME} 
+  ${dependencies}
+)
 
-# rclcpp_components_register_nodes(${CRANE_X7_MPC_LIB} "crane_x7_mpc::MPC")
+install(
+  TARGETS ${PROJECT_NAME} 
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+install(DIRECTORY
+  urdf
+  DESTINATION share/${PROJECT_NAME}/
+)
 
-# # Generate standalone node executable
-# set(CRANE_X7_MPC_EXE "${CRANE_X7_MPC_LIB}_exe")
-# add_executable(${CRANE_X7_MPC_EXE} src/crane_x7_mpc_main.cpp)
-# target_link_libraries(${CRANE_X7_MPC_EXE} ${CRANE_X7_MPC_LIB})
-
-# ament_export_targets(export_${CRANE_X7_MPC_LIB} HAS_LIBRARY_TARGET)
-# ament_export_dependencies(${dependencies})
-
-
-# install(
-#   DIRECTORY include/
-#   DESTINATION include
-# )
-# install(
-#   TARGETS ${CRANE_X7_MPC_LIB} ${CRANE_X7_MPC_EXE}
-#   EXPORT export_${PENDULUM_CONTROLLER_LIB}
-#   LIBRARY DESTINATION lib
-#   ARCHIVE DESTINATION lib
-#   RUNTIME DESTINATION lib/${PROJECT_NAME}
-#   INCLUDES DESTINATION include
-# )
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+  # find_package(ament_cmake_gtest REQUIRED)
+endif()
 
 ament_package()

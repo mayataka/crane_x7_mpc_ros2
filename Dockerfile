@@ -16,6 +16,25 @@ RUN mkdir -p /tmp/ros_setup_scripts_ubuntu && mv /ros-foxy-desktop.sh /tmp/ros_s
     gosu ubuntu /tmp/ros_setup_scripts_ubuntu/ros-foxy-desktop.sh && \
     rm -rf /var/lib/apt/lists/*
 
+# install MPC solver
+RUN apt-get install -qqy lsb-release gnupg2 curl \
+    && echo "deb [arch=amd64] http://robotpkg.openrobots.org/packages/debian/pub $(lsb_release -cs) robotpkg" | tee /etc/apt/sources.list.d/robotpkg.list \
+    && curl http://robotpkg.openrobots.org/packages/debian/robotpkg.key | apt-key add - \
+    && apt update -y \
+    && apt-get install -qqy robotpkg-py38-pinocchio 
+
+ENV PATH=/opt/openrobots/bin:$PATH
+ENV PKG_CONFIG_PATH=/opt/openrobots/lib/pkgconfig:$PKG_CONFIG_PATH
+ENV LD_LIBRARY_PATH=/opt/openrobots/lib:$LD_LIBRARY_PATH
+ENV PYTHONPATH=/opt/openrobots/lib/python3.8/site-packages:$PYTHONPATH 
+ENV CMAKE_PREFIX_PATH=/opt/openrobots:$CMAKE_PREFIX_PATH  
+
+RUN git clone https://github.com/mayataka/idocp.git \
+    && cd idocp && mkdir build && cd build \
+    && cmake .. -DCMAKE_BUILD_TYPE=Release -DOPTIMIZE_FOR_NATIVE=ON -DBUILD_PYTHON_INTERFACE=OFF \
+    && make install -j3
+
+# build CRANE-X7 MPC package
 RUN apt-get update && apt-get install -q -y --no-install-recommends \
     dirmngr \
     gnupg2 \

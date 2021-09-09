@@ -56,11 +56,11 @@ def generate_launch_description():
         executable='spawner.py',
         arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
     )
-    # spawn_joint_velocity_controller = Node(
-    #     package="controller_manager",
-    #     executable="spawner.py",
-    #     arguments=["joint_velocity_controller", "-c", "/controller_manager"],
-    # )
+    spawn_joint_velocity_controller = Node(
+        package="controller_manager",
+        executable="spawner.py",
+        arguments=["joint_velocity_controller", "-c", "/controller_manager"],
+    )
 
 
     return LaunchDescription([
@@ -69,5 +69,5 @@ def generate_launch_description():
         spawn_entity,
         spawn_controller_manager,
         spawn_joint_state_broadcaster,
-        # spawn_joint_velocity_controller,
+        spawn_joint_velocity_controller,
     ])

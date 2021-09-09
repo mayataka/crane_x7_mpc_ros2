@@ -1,9 +1,12 @@
 # CRANE_X7_MPC_ROS2
 
+### CAUTION: This repo is under development
+
+
 Build and run an example with Docker:
 ```
 docker build -t crane_x7_mpc_ros2 .
-docker run -it --rm --name crane_x7_mpc_ros2 --net host crane_x7_mpc_ros2 
+docker run -p 6080:80 --shm-size=512m crane_x7_mpc_ros2
 ```
 You can see the gui from a web browser (VNC)
 ```

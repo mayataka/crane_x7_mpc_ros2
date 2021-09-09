@@ -5,9 +5,12 @@
 #include <memory>
 #include <cmath>
 
+#include "Eigen/Core"
+
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/float64_multi_array.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
+#include "ament_index_cpp/get_package_share_directory.hpp"
 
 #include "idocp/solver/unconstr_ocp_solver.hpp"
 #include "idocp/cost/cost_function.hpp"
@@ -40,13 +43,13 @@ public:
   ~TimeVaryingTaskSpace3DRef() {}
 
   void update_q_3d_ref(const double t, Eigen::VectorXd& q_3d_ref) const override {
-    q_ed_ref = pos0_;
+    q_3d_ref = pos0_;
     q_3d_ref.coeffRef(1) += radius_ * sin(M_PI*t);
     q_3d_ref.coeffRef(2) += radius_ * cos(M_PI*t);
   }
 
   bool isActive(const double t) const override {
-    return true;
+    return is_active_;
   }
 
   void activate() {
@@ -85,6 +88,10 @@ public:
     SE3_ref = pinocchio::SE3(rotm_, pos);
   }
 
+  bool isActive(const double t) const override {
+    return is_active_;
+  }
+
   void activate() {
     is_active_ = true;
   }
@@ -105,14 +112,13 @@ class CraneX7MPC : public rclcpp::Node
 {
 public:
   CRANE_X7_MPC_PUBLIC 
-  CraneX7MPC(const std::string& path_to_urdf);
+  CraneX7MPC();
 
   CRANE_X7_MPC_PUBLIC 
   ~CraneX7MPC();
 
   CRANE_X7_MPC_PUBLIC 
-  void init(const double t, const Eigen::VectorXd& q, const Eigen::VectorXd& v,
-            const double barrier=1.0e-01, const int iter=0);
+  void init(const double barrier=1.0e-01, const int iter=0);
 
 private:
   // OCP solver 
@@ -124,10 +130,10 @@ private:
   int end_effector_frame_;
   std::shared_ptr<idocp::CostFunction> cost_;
   std::shared_ptr<idocp::ConfigurationSpaceCost> config_cost_;
-  std::shared_ptr<idocp::TimeVaryingTaskSpace3DCost> 3d_task_cost_;
-  std::shared_ptr<idocp::TimeVaryingTaskSpace6DCost> 6d_task_cost_;
-  std::shared_ptr<TimeVaryingTaskSpace3DRef> 3d_ref_;
-  std::shared_ptr<TimeVaryingTaskSpace6DRef> 6d_ref_;
+  std::shared_ptr<idocp::TimeVaryingTaskSpace3DCost> task_cost_3d_;
+  std::shared_ptr<idocp::TimeVaryingTaskSpace6DCost> task_cost_6d_;
+  std::shared_ptr<TimeVaryingTaskSpace3DRef> ref_3d_;
+  std::shared_ptr<TimeVaryingTaskSpace6DRef> ref_6d_;
   // Constraints
   std::shared_ptr<idocp::Constraints> constraints_;
   std::shared_ptr<idocp::JointPositionLowerLimit> joint_position_lower_limit_;
@@ -137,7 +143,7 @@ private:
   std::shared_ptr<idocp::JointTorquesLowerLimit> joint_torques_lower_limit_;
   std::shared_ptr<idocp::JointTorquesUpperLimit> joint_torques_upper_limit_;
   // Subscriber and publisher for state-feedback control
-  std::shared_ptr<rclcpp::Subscriber<sensor_msgs::msg::JointState>> joint_state_subscriber_;
+  std::shared_ptr<rclcpp::Subscription<sensor_msgs::msg::JointState>> joint_state_subscriber_;
   std_msgs::msg::Float64MultiArray command_message_;
   std::shared_ptr<rclcpp::Publisher<std_msgs::msg::Float64MultiArray>> joint_command_publisher_;
   Eigen::VectorXd q_, v_, a_;
