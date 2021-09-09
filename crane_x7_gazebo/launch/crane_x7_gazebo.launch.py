@@ -30,7 +30,6 @@ def generate_launch_description():
     spawn_robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        name='robot_state_publisher',
         parameters=[robot_description],
         output='screen'
     )
@@ -57,29 +56,18 @@ def generate_launch_description():
         executable='spawner.py',
         arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
     )
-    # spawn_joint_effort_controller = Node(
-    #     package='controller_manager',
-    #     executable='spawner.py',
-    #     arguments=['joint_effort_controller', '-c', '/controller_manager'],
+    # spawn_joint_velocity_controller = Node(
+    #     package="controller_manager",
+    #     executable="spawner.py",
+    #     arguments=["joint_velocity_controller", "-c", "/controller_manager"],
     # )
 
+
     return LaunchDescription([
-        # RegisterEventHandler(
-        #     event_handler=OnProcessExit(
-        #         target_action=spawn_entity,
-        #         on_exit=[spawn_joint_state_broadcaster],
-        #     )
-        # ),
-        # RegisterEventHandler(
-        #     event_handler=OnProcessExit(
-        #         target_action=spawn_joint_state_broadcaster,
-        #         on_exit=[spawn_effort_controller],
-        #     )
-        # ),
         gazebo,
         spawn_robot_state_publisher,
         spawn_entity,
         spawn_controller_manager,
         spawn_joint_state_broadcaster,
-        # spawn_joint_effort_controller,
+        # spawn_joint_velocity_controller,
     ])

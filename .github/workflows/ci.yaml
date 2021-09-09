@@ -1,9 +1,9 @@
-name: Gazebo ros2 control CI
+name: CRANE-X7 MPC ros2 CI
 
 on:
   pull_request:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -33,11 +33,12 @@ jobs:
       run: |
         cd /home/ros2_ws/
         . /opt/ros/foxy/local_setup.sh
-        colcon build --packages-up-to gazebo_ros2_control_demos
-    - name: Run tests
-      id: test
-      run: |
-        cd /home/ros2_ws/
-        . /opt/ros/foxy/local_setup.sh
-        colcon test --event-handlers console_direct+ --packages-select gazebo_ros2_control gazebo_ros2_control_demos
-        colcon test-result
+        colcon build --symlink-install
+    #    colcon build --packages-up-to # write packages here
+    # - name: Run tests
+    #   id: test
+    #   run: |
+    #     cd /home/ros2_ws/
+    #     . /opt/ros/foxy/local_setup.sh
+    #     colcon test --event-handlers console_direct+ --packages-select # write test packages here
+    #     colcon test-result

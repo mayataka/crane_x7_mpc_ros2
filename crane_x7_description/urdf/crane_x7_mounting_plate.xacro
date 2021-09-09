@@ -17,7 +17,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://crane_x7_description/meshes/visual/mounting_plate.stl"
+          <mesh filename="file://$(find crane_x7_description)/meshes/visual/mounting_plate.stl"
               scale="1 1 1"/>
         </geometry>
         <material name="${color}"/>
@@ -26,7 +26,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://crane_x7_description/meshes/collision/mounting_plate.stl"
+          <mesh filename="file://$(find crane_x7_description)/meshes/collision/mounting_plate.stl"
               scale="1 1 1"/>
         </geometry>
       </collision>

@@ -10,7 +10,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://crane_x7_description/meshes/visual/wide_two_finger_gripper_actuator.stl"
+          <mesh filename="file://$(find crane_x7_description)/meshes/visual/wide_two_finger_gripper_actuator.stl"
               scale="1 1 1"/>
         </geometry>
         <material name="${color}"/>
@@ -19,7 +19,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://crane_x7_description/meshes/collision/wide_two_finger_gripper_actuator.stl"
+          <mesh filename="file://$(find crane_x7_description)/meshes/collision/wide_two_finger_gripper_actuator.stl"
               scale="1 1 1"/>
         </geometry>
       </collision>
@@ -71,7 +71,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
         <geometry>
-          <mesh filename="package://crane_x7_description/meshes/visual/wide_two_finger_gripper_finger_a.stl"
+          <mesh filename="file://$(find crane_x7_description)/meshes/visual/wide_two_finger_gripper_finger_a.stl"
               scale="1 1 1"/>
         </geometry>
         <material name="${color}"/>
@@ -80,7 +80,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
         <geometry>
-          <mesh filename="package://crane_x7_description/meshes/collision/wide_two_finger_gripper_finger_a.stl"
+          <mesh filename="file://$(find crane_x7_description)/meshes/collision/wide_two_finger_gripper_finger_a.stl"
               scale="1 1 1"/>
         </geometry>
       </collision>
@@ -108,7 +108,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
         <geometry>
-          <mesh filename="package://crane_x7_description/meshes/visual/wide_two_finger_gripper_finger_b.stl"
+          <mesh filename="file://$(find crane_x7_description)/meshes/visual/wide_two_finger_gripper_finger_b.stl"
               scale="1 1 1"/>
         </geometry>
         <material name="${color}"/>
@@ -117,7 +117,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
         <geometry>
-          <mesh filename="package://crane_x7_description/meshes/collision/wide_two_finger_gripper_finger_b.stl"
+          <mesh filename="file://$(find crane_x7_description)/meshes/collision/wide_two_finger_gripper_finger_b.stl"
               scale="1 1 1"/>
         </geometry>
       </collision>
