@@ -2,6 +2,8 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch.substitutions import Command
 
@@ -48,6 +50,11 @@ def generate_launch_description():
         executable="spawner.py",
         arguments=["joint_velocity_controller", "-c", "/controller_manager"],
     )
+    spawn_mpc = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([os.path.join(
+            get_package_share_directory('crane_x7_mpc'), 'launch'), 
+            '/crane_x7_mpc.launch.py']),
+    )
 
     rviz = Node(
         package='rviz2',
@@ -63,5 +70,6 @@ def generate_launch_description():
         spawn_controller_manager,
         spawn_joint_state_broadcaster,
         spawn_joint_velocity_controller, 
+        spawn_mpc,
         rviz,
     ])

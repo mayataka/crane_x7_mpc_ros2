@@ -15,6 +15,7 @@ if(NOT WIN32)
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(pinocchio REQUIRED)
 find_package(idocp REQUIRED)
@@ -22,17 +23,8 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
-set(dependencies
-  Eigen3
-  idocp
-  rclcpp
-  std_msgs
-  sensor_msgs
-)
-
-add_library(
+add_executable(
   ${PROJECT_NAME} 
-  SHARED
   src/crane_x7_mpc.cpp
   src/crane_x7_mpc_main.cpp
 )
@@ -48,21 +40,30 @@ target_include_directories(
 )
 ament_target_dependencies(
   ${PROJECT_NAME} 
-  ${dependencies}
+  ament_index_cpp
+  Eigen3
+  rclcpp
+  std_msgs
+  sensor_msgs
+)
+target_link_libraries(
+  ${PROJECT_NAME} 
+  idocp::idocp
 )
 
 install(
   TARGETS ${PROJECT_NAME} 
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION lib/${PROJECT_NAME}
+  DESTINATION lib/${PROJECT_NAME}
 )
+
 install(
   DIRECTORY include/
   DESTINATION include
 )
 install(DIRECTORY
   urdf
+  launch
+  config
   DESTINATION share/${PROJECT_NAME}/
 )
 

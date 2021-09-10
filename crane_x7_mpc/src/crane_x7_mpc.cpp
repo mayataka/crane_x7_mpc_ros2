@@ -11,7 +11,7 @@ CraneX7MPC::CraneX7MPC()
     ocp_solver_(),
     N_(20), 
     nthreads_(4), 
-    iter_(2),
+    niter_(2),
     T_(0.5), 
     dt_(T_/N_),
     robot_(),
@@ -42,9 +42,25 @@ CraneX7MPC::CraneX7MPC()
   robot_ = idocp::Robot(path_to_urdf);
   create_cost();
   create_constraints();
+  auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(this);
+  using namespace std::chrono_literals;
+  while (!parameters_client->wait_for_service(1s)) {
+    if (!rclcpp::ok()) {
+      RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.");
+      rclcpp::shutdown();
+    }
+    RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
+  }
+  T_ = parameters_client->get_parameter("T", 0.5);
+  N_ = parameters_client->get_parameter("N", 20);
+  dt_ = T_ / N_;
+  nthreads_ = parameters_client->get_parameter("nthreads", 4);
+  niter_ = parameters_client->get_parameter("niter", 2);
+  barrier_ = parameters_client->get_parameter("barrier", 0.1);
+
   ocp_solver_ = idocp::UnconstrOCPSolver(robot_, cost_, constraints_, 
                                          T_, N_, nthreads_);
-  init(1.0e-01, 0);
+  init(barrier_, 0);
 
   // Create the state feedback controller
   auto mpc_callback = [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
@@ -55,7 +71,7 @@ CraneX7MPC::CraneX7MPC()
       q_.coeffRef(i) = msg->position[i];
       v_.coeffRef(i) = msg->velocity[i];
     }
-    for (int i=0; i<iter_; ++i) {
+    for (int i=0; i<niter_; ++i) {
       ocp_solver_.updateSolution(t0, q_, v_);
     }
     const Eigen::VectorXd& a_opt = ocp_solver_.getSolution(0).a;
@@ -66,18 +82,19 @@ CraneX7MPC::CraneX7MPC()
       command_message_.data[i] = v_.coeff(i) + dt*a_opt.coeff(i);
     }
     joint_command_publisher_->publish(command_message_);
+    RCLCPP_INFO(this->get_logger(), "Subscribing");
   };
   joint_state_subscriber_ = this->create_subscription<sensor_msgs::msg::JointState>(
-    "/joint_states",
-    rclcpp::QoS(10), mpc_callback);
+      "/joint_states",
+      rclcpp::QoS(10), mpc_callback);
   joint_command_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>(
-    "/joint_velocity_controller/commands", 10);
+      "/joint_velocity_controller/commands", 10);
 
   // Init command msg
   command_message_.layout.dim.push_back(std_msgs::msg::MultiArrayDimension());
   command_message_.layout.dim[0].size = 7;
   command_message_.layout.dim[0].stride = 7;
-  command_message_.layout.dim[0].label = "velocity_command";
+  command_message_.layout.dim[0].label = "velocity_commands";
   command_message_.data.clear();
   for (int i=0; i<7; ++i) { command_message_.data.push_back(0.0); }
 }

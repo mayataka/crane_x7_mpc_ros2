@@ -123,8 +123,8 @@ public:
 private:
   // OCP solver 
   idocp::UnconstrOCPSolver ocp_solver_;
-  int N_, nthreads_, iter_; 
-  double T_, dt_;
+  int N_, nthreads_, niter_; 
+  double T_, dt_, barrier_;
   idocp::Robot robot_;
   // Cost function
   int end_effector_frame_;

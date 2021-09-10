@@ -1,0 +1,7 @@
+crane_x7_mpc:
+  ros__parameters:
+    T: 0.5
+    N: 20
+    nthreads: 4
+    niter: 2
+    barrier: 0.1

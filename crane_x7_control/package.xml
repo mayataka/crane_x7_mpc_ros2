@@ -15,6 +15,7 @@
   <depend>ament_index_python</depend>
 
   <depend>crane_x7_description</depend>
+  <depend>crane_x7_mpc</depend>
   <depend>robot_state_publisher</depend>
   <depend>joint_state_publisher</depend>
   <depend>joint_state_publisher_gui</depend>
