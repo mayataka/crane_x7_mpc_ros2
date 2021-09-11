@@ -15,7 +15,7 @@ CraneX7MPC::CraneX7MPC()
     T_(0.5), 
     dt_(T_/N_),
     robot_(),
-    end_effector_frame_(18),
+    end_effector_frame_(26),
     cost_(),
     config_cost_(),
     task_cost_3d_(),
@@ -53,7 +53,7 @@ CraneX7MPC::CraneX7MPC()
   }
   T_ = parameters_client->get_parameter("T", 0.5);
   N_ = parameters_client->get_parameter("N", 20);
-  dt_ = T_ / N_;
+  dt_ = parameters_client->get_parameter("dt", (T_/N_));
   nthreads_ = parameters_client->get_parameter("nthreads", 4);
   niter_ = parameters_client->get_parameter("niter", 2);
   barrier_ = parameters_client->get_parameter("barrier", 0.1);
@@ -64,25 +64,21 @@ CraneX7MPC::CraneX7MPC()
 
   // Create the state feedback controller
   auto mpc_callback = [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
-    const auto t0_cl = std::chrono::system_clock::now();
-    const double t0 = 1e-03 * std::chrono::duration_cast<std::chrono::microseconds>(
-        t0_cl.time_since_epoch()).count();
+    const auto t_cl = std::chrono::system_clock::now();
+    const double t = 1e-06 * std::chrono::duration_cast<std::chrono::microseconds>(
+        t_cl.time_since_epoch()).count();
     for (int i=0; i<7; ++i) {
       q_.coeffRef(i) = msg->position[i];
       v_.coeffRef(i) = msg->velocity[i];
     }
     for (int i=0; i<niter_; ++i) {
-      ocp_solver_.updateSolution(t0, q_, v_);
+      ocp_solver_.updateSolution(t, q_, v_);
     }
     const Eigen::VectorXd& a_opt = ocp_solver_.getSolution(0).a;
-    const auto t1_cl = std::chrono::system_clock::now();
-    const double dt = 1e-03 * std::chrono::duration_cast<std::chrono::microseconds>(
-        t1_cl-t0_cl).count(); 
     for (int i=0; i<7; ++i) {
-      command_message_.data[i] = v_.coeff(i) + dt*a_opt.coeff(i);
+      command_message_.data[i] = v_.coeff(i) + dt_*a_opt.coeff(i);
     }
     joint_command_publisher_->publish(command_message_);
-    RCLCPP_INFO(this->get_logger(), "Subscribing");
   };
   joint_state_subscriber_ = this->create_subscription<sensor_msgs::msg::JointState>(
       "/joint_states",
@@ -113,7 +109,7 @@ void CraneX7MPC::init(const double barrier, const int iter)
   ocp_solver_.initConstraints();
   if (iter > 0) {
     const auto t_cl = std::chrono::system_clock::now();
-    const double t = 1e-03 * std::chrono::duration_cast<std::chrono::microseconds>(
+    const double t = 1e-06 * std::chrono::duration_cast<std::chrono::microseconds>(
         t_cl.time_since_epoch()).count();
     for (int i=0; i<iter; ++i) {
       ocp_solver_.updateSolution(t, q_, v_);
@@ -123,23 +119,45 @@ void CraneX7MPC::init(const double barrier, const int iter)
 
 
 void CraneX7MPC::create_cost() {
+  auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(this);
+  using namespace std::chrono_literals;
+  while (!parameters_client->wait_for_service(1s)) {
+    if (!rclcpp::ok()) {
+      RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.");
+      rclcpp::shutdown();
+    }
+    RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
+  }
   cost_ = std::make_shared<idocp::CostFunction>();
   config_cost_ = std::make_shared<idocp::ConfigurationSpaceCost>(robot_);
-  config_cost_->set_q_weight(Eigen::VectorXd::Constant(robot_.dimv(), 0.1));
-  config_cost_->set_qf_weight(Eigen::VectorXd::Constant(robot_.dimv(), 0.1));
-  config_cost_->set_v_weight(Eigen::VectorXd::Constant(robot_.dimv(), 0.0001));
-  config_cost_->set_vf_weight(Eigen::VectorXd::Constant(robot_.dimv(), 0.0001));
-  config_cost_->set_a_weight(Eigen::VectorXd::Constant(robot_.dimv(), 0.0001));
+  config_cost_->set_q_weight(Eigen::VectorXd::Constant(
+      robot_.dimv(), parameters_client->get_parameter("config_cost.q_weight", 0.1)));
+  config_cost_->set_v_weight(Eigen::VectorXd::Constant(
+      robot_.dimv(), parameters_client->get_parameter("config_cost.v_weight", 0.001)));
+  config_cost_->set_a_weight(Eigen::VectorXd::Constant(
+      robot_.dimv(), parameters_client->get_parameter("config_cost.a_weight", 0.001)));
+  config_cost_->set_u_weight(Eigen::VectorXd::Constant(
+      robot_.dimv(), parameters_client->get_parameter("config_cost.u_weight", 0.0)));
+  config_cost_->set_qf_weight(Eigen::VectorXd::Constant(
+      robot_.dimv(), parameters_client->get_parameter("config_cost.qf_weight", 0.1)));
+  config_cost_->set_vf_weight(Eigen::VectorXd::Constant(
+      robot_.dimv(), parameters_client->get_parameter("config_cost.vf_weight", 0.001)));
   ref_3d_ = std::make_shared<TimeVaryingTaskSpace3DRef>();
   ref_3d_->deactivate();
   task_cost_3d_ = std::make_shared<idocp::TimeVaryingTaskSpace3DCost>(robot_, end_effector_frame_, ref_3d_);
-  task_cost_3d_->set_q_weight(Eigen::Vector3d::Constant(1000));
-  task_cost_3d_->set_qf_weight(Eigen::Vector3d::Constant(1000));
+  task_cost_3d_->set_q_weight(Eigen::Vector3d::Constant(
+      parameters_client->get_parameter("task_3d_cost.q_weight", 1000)));
+  task_cost_3d_->set_qf_weight(Eigen::Vector3d::Constant(
+      parameters_client->get_parameter("task_3d_cost.qf_weight", 1000)));
   ref_6d_ = std::make_shared<TimeVaryingTaskSpace6DRef>();
   ref_6d_->deactivate();
   task_cost_6d_ = std::make_shared<idocp::TimeVaryingTaskSpace6DCost>(robot_, end_effector_frame_, ref_6d_);
-  task_cost_6d_->set_q_weight(Eigen::Vector3d::Constant(1000), Eigen::Vector3d::Constant(1000));
-  task_cost_6d_->set_qf_weight(Eigen::Vector3d::Constant(1000), Eigen::Vector3d::Constant(1000));
+  task_cost_6d_->set_q_weight(
+      Eigen::Vector3d::Constant(parameters_client->get_parameter("config_cost.q_trans_weight", 1000)), 
+      Eigen::Vector3d::Constant(parameters_client->get_parameter("config_cost.q_rot_weight", 1000)));
+  task_cost_6d_->set_qf_weight(
+      Eigen::Vector3d::Constant(parameters_client->get_parameter("config_cost.qf_trans_weight", 1000)), 
+      Eigen::Vector3d::Constant(parameters_client->get_parameter("config_cost.qf_rot_weight", 1000)));
   cost_->push_back(config_cost_);
   cost_->push_back(task_cost_3d_);
   cost_->push_back(task_cost_6d_);

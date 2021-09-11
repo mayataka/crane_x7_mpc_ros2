@@ -1,7 +1,26 @@
 crane_x7_mpc:
   ros__parameters:
+    dt: 0.0025
     T: 0.5
     N: 20
     nthreads: 4
     niter: 2
     barrier: 0.1
+
+    config_cost:
+      q_weight: 0.1
+      v_weight: 0.001
+      a_weight: 0.001
+      u_weight: 0.0
+      qf_weight: 0.1
+      vf_weight: 0.001
+
+    task_3d_cost:
+      q_weight: 1000
+      qf_weight: 1000
+
+    task_6d_cost:
+      q_trans_weight: 1000
+      q_rot_weight: 1000
+      qf_transe_weight: 1000
+      qf_rot_weight: 1000
