@@ -11,6 +11,7 @@
 #include "std_msgs/msg/float64_multi_array.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 #include "ament_index_cpp/get_package_share_directory.hpp"
+#include "std_srvs/srv/set_bool.hpp"
 
 #include "idocp/solver/unconstr_ocp_solver.hpp"
 #include "idocp/cost/cost_function.hpp"
@@ -146,6 +147,8 @@ private:
   std::shared_ptr<rclcpp::Subscription<sensor_msgs::msg::JointState>> joint_state_subscriber_;
   std_msgs::msg::Float64MultiArray command_message_;
   std::shared_ptr<rclcpp::Publisher<std_msgs::msg::Float64MultiArray>> joint_command_publisher_;
+  std::shared_ptr<rclcpp::Service<std_srvs::srv::SetBool>> enable_3d_ref_, enable_6d_ref_;
+
   Eigen::VectorXd q_, v_, a_;
 
   void create_cost();

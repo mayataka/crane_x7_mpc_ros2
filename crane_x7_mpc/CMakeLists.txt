@@ -22,6 +22,7 @@ find_package(idocp REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 
 add_executable(
   ${PROJECT_NAME} 
@@ -45,6 +46,7 @@ ament_target_dependencies(
   rclcpp
   std_msgs
   sensor_msgs
+  std_srvs
 )
 target_link_libraries(
   ${PROJECT_NAME} 

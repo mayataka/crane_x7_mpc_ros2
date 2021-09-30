@@ -93,6 +93,22 @@ CraneX7MPC::CraneX7MPC()
   command_message_.layout.dim[0].label = "velocity_commands";
   command_message_.data.clear();
   for (int i=0; i<7; ++i) { command_message_.data.push_back(0.0); }
+
+  // Create the service to enable/disable costs
+  auto cost_3d_service = [this](const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
+                                std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
+    if (request->data) ref_3d_->activate();
+    else ref_3d_->deactivate();
+    response->success = true;
+  };
+  auto cost_6d_service = [this](const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
+                                std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
+    if (request->data) ref_6d_->activate();
+    else ref_6d_->deactivate();
+    response->success = true;
+  };
+  enable_3d_ref_ = this->create_service<std_srvs::srv::SetBool>("enable_3d_ref", cost_3d_service);
+  enable_6d_ref_ = this->create_service<std_srvs::srv::SetBool>("enable_6d_ref", cost_6d_service);
 }
 
 
@@ -143,14 +159,12 @@ void CraneX7MPC::create_cost() {
   config_cost_->set_vf_weight(Eigen::VectorXd::Constant(
       robot_.dimv(), parameters_client->get_parameter("config_cost.vf_weight", 0.001)));
   ref_3d_ = std::make_shared<TimeVaryingTaskSpace3DRef>();
-  ref_3d_->deactivate();
   task_cost_3d_ = std::make_shared<idocp::TimeVaryingTaskSpace3DCost>(robot_, end_effector_frame_, ref_3d_);
   task_cost_3d_->set_q_weight(Eigen::Vector3d::Constant(
       parameters_client->get_parameter("task_3d_cost.q_weight", 1000)));
   task_cost_3d_->set_qf_weight(Eigen::Vector3d::Constant(
       parameters_client->get_parameter("task_3d_cost.qf_weight", 1000)));
   ref_6d_ = std::make_shared<TimeVaryingTaskSpace6DRef>();
-  ref_6d_->deactivate();
   task_cost_6d_ = std::make_shared<idocp::TimeVaryingTaskSpace6DCost>(robot_, end_effector_frame_, ref_6d_);
   task_cost_6d_->set_q_weight(
       Eigen::Vector3d::Constant(parameters_client->get_parameter("config_cost.q_trans_weight", 1000)), 
@@ -162,8 +176,8 @@ void CraneX7MPC::create_cost() {
   cost_->push_back(task_cost_3d_);
   cost_->push_back(task_cost_6d_);
 
-  // ref_3d_->activate();
-  ref_6d_->activate();
+  ref_3d_->deactivate();
+  ref_6d_->deactivate();
 }
 
 
