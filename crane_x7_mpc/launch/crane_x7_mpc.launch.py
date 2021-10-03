@@ -15,7 +15,7 @@ def generate_launch_description():
         package="crane_x7_mpc",
         executable="crane_x7_mpc_composition",
         output='screen',
-        parameters=[config_file],
+        parameters=[config_file]
     )
 
     return LaunchDescription([
