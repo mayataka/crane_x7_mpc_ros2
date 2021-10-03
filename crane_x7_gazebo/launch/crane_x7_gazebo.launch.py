@@ -56,11 +56,16 @@ def generate_launch_description():
         executable='spawner.py',
         arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
     )
-    spawn_joint_velocity_controller = Node(
+    spawn_joint_position_controller = Node(
         package="controller_manager",
         executable="spawner.py",
-        arguments=["joint_velocity_controller", "-c", "/controller_manager"],
+        arguments=["joint_position_controller", "-c", "/controller_manager"],
     )
+    # spawn_joint_velocity_controller = Node(
+    #     package="controller_manager",
+    #     executable="spawner.py",
+    #     arguments=["joint_velocity_controller", "-c", "/controller_manager"],
+    # )
     spawn_mpc = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('crane_x7_mpc'), 'launch'), 
@@ -74,6 +79,7 @@ def generate_launch_description():
         spawn_entity,
         spawn_controller_manager,
         spawn_joint_state_broadcaster,
-        spawn_joint_velocity_controller,
+        spawn_joint_position_controller,
+        # spawn_joint_velocity_controller,
         spawn_mpc,
     ])

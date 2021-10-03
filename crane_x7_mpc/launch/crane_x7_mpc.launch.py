@@ -13,7 +13,7 @@ def generate_launch_description():
                                'config', 'crane_x7_mpc.yaml')
     spawn_mpc = Node(
         package="crane_x7_mpc",
-        executable="crane_x7_mpc",
+        executable="crane_x7_mpc_composition",
         output='screen',
         parameters=[config_file],
     )

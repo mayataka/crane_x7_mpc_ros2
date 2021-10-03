@@ -3,9 +3,18 @@ crane_x7_mpc:
     dt: 0.0025
     T: 0.5
     N: 20
-    nthreads: 4
+    nthreads: 2
     niter: 2
     barrier: 0.1
+
+    qj_ref:
+      qj1_ref: 1.0
+      qj2_ref: 0
+      qj3_ref: 0
+      qj4_ref: 0
+      qj5_ref: 0
+      qj6_ref: 0
+      qj7_ref: 0
 
     config_cost:
       q_weight: 0.1

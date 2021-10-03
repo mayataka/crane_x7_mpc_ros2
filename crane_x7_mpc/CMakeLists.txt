@@ -20,14 +20,17 @@ find_package(Eigen3 REQUIRED)
 find_package(pinocchio REQUIRED)
 find_package(idocp REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 
-add_executable(
+set(node_plugins "")
+
+add_library(
   ${PROJECT_NAME} 
+  SHARED
   src/crane_x7_mpc.cpp
-  src/crane_x7_mpc_main.cpp
 )
 target_include_directories(
   ${PROJECT_NAME} 
@@ -44,6 +47,7 @@ ament_target_dependencies(
   ament_index_cpp
   Eigen3
   rclcpp
+  rclcpp_components
   std_msgs
   sensor_msgs
   std_srvs
@@ -52,9 +56,50 @@ target_link_libraries(
   ${PROJECT_NAME} 
   idocp::idocp
 )
+target_compile_definitions(
+  ${PROJECT_NAME} 
+  PRIVATE
+  "crane_x7_mpc_BUILDING_LIBRARY"
+)
+rclcpp_components_register_nodes(
+  ${PROJECT_NAME} 
+  PLUGIN
+  "crane_x7_mpc::CraneX7MPC"
+  EXECUTABLE crane_x7_mpc_node
+)
+set(node_plugins "${node_plugins}crane_x7_mpc::CraneX7MPC;$<TARGET_FILE:crane_x7_mpc>\n")
+
+add_executable(
+  ${PROJECT_NAME}_composition
+  src/crane_x7_mpc_composition.cpp
+)
+target_link_libraries(
+  ${PROJECT_NAME}_composition
+  crane_x7_mpc
+)
+ament_target_dependencies(
+  ${PROJECT_NAME}_composition
+  "rclcpp"
+)
+
+file(
+  GENERATE
+  OUTPUT
+  "${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>/share/ament_index/resource_index/node_plugin/${PROJECT_NAME}"
+  CONTENT "${node_plugins}"
+)
+
+
 
 install(
   TARGETS ${PROJECT_NAME} 
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+install(
+  TARGETS ${PROJECT_NAME}_composition
   DESTINATION lib/${PROJECT_NAME}
 )
 

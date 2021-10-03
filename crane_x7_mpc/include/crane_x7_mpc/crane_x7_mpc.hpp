@@ -26,7 +26,7 @@
 #include "idocp/constraints/joint_torques_lower_limit.hpp"
 #include "idocp/constraints/joint_torques_upper_limit.hpp"
 
-#include "crane_x7_mpc/visiblity_control.h"
+#include "visiblity_control.h"
 
 
 namespace crane_x7_mpc 
@@ -113,13 +113,16 @@ class CraneX7MPC : public rclcpp::Node
 {
 public:
   CRANE_X7_MPC_PUBLIC 
-  CraneX7MPC();
+  explicit CraneX7MPC(rclcpp::NodeOptions options);
 
-  CRANE_X7_MPC_PUBLIC 
+  CRANE_X7_MPC_PUBLIC
   ~CraneX7MPC();
 
-  CRANE_X7_MPC_PUBLIC 
+  CRANE_X7_MPC_PUBLIC
   void init(const double barrier=1.0e-01, const int iter=0);
+
+// protected:
+//   void on_timer();
 
 private:
   // OCP solver 
@@ -145,11 +148,11 @@ private:
   std::shared_ptr<idocp::JointTorquesUpperLimit> joint_torques_upper_limit_;
   // Subscriber and publisher for state-feedback control
   std::shared_ptr<rclcpp::Subscription<sensor_msgs::msg::JointState>> joint_state_subscriber_;
-  std_msgs::msg::Float64MultiArray command_message_;
+  std_msgs::msg::Float64MultiArray command_msg_;
   std::shared_ptr<rclcpp::Publisher<std_msgs::msg::Float64MultiArray>> joint_command_publisher_;
   std::shared_ptr<rclcpp::Service<std_srvs::srv::SetBool>> enable_3d_ref_, enable_6d_ref_;
 
-  Eigen::VectorXd q_, v_, a_;
+  Eigen::VectorXd q_, v_, a_, qj_ref_;
 
   void create_cost();
   void create_constraints();

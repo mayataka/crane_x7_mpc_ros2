@@ -34,6 +34,9 @@ RUN git clone https://github.com/mayataka/idocp.git \
     && cmake .. -DCMAKE_BUILD_TYPE=Release -DOPTIMIZE_FOR_NATIVE=ON -DBUILD_PYTHON_INTERFACE=OFF \
     && make install -j3
 
+# install PlotJuggler
+RUN apt-get install ros-foxy-plotjuggler -y
+
 # build CRANE-X7 MPC package
 RUN apt-get update && apt-get install -q -y --no-install-recommends \
     dirmngr \
