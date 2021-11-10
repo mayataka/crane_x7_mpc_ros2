@@ -29,13 +29,10 @@ ENV LD_LIBRARY_PATH=/opt/openrobots/lib:$LD_LIBRARY_PATH
 ENV PYTHONPATH=/opt/openrobots/lib/python3.8/site-packages:$PYTHONPATH 
 ENV CMAKE_PREFIX_PATH=/opt/openrobots:$CMAKE_PREFIX_PATH  
 
-RUN git clone https://github.com/mayataka/idocp.git \
-    && cd idocp && mkdir build && cd build \
+RUN git clone https://github.com/mayataka/robotoc.git \
+    && cd robotoc && mkdir build && cd build \
     && cmake .. -DCMAKE_BUILD_TYPE=Release -DOPTIMIZE_FOR_NATIVE=ON -DBUILD_PYTHON_INTERFACE=OFF \
     && make install -j3
-
-# install PlotJuggler
-RUN apt-get install ros-foxy-plotjuggler -y
 
 # build CRANE-X7 MPC package
 RUN apt-get update && apt-get install -q -y --no-install-recommends \

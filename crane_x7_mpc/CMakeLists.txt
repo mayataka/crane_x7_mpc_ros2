@@ -18,7 +18,7 @@ find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(pinocchio REQUIRED)
-find_package(idocp REQUIRED)
+find_package(robotoc REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -39,7 +39,7 @@ target_include_directories(
   $<INSTALL_INTERFACE:include>
   PRIVATE
   ${EIGEN3_INCLUDE_DIR}
-  ${IDOCP_INCLUDE_DIR}
+  ${ROBOTOC_INCLUDE_DIR}
   ${PINOCCHIO_INCLUDE_DIRS}
 )
 ament_target_dependencies(
@@ -54,7 +54,7 @@ ament_target_dependencies(
 )
 target_link_libraries(
   ${PROJECT_NAME} 
-  idocp::idocp
+  robotoc::robotoc
 )
 target_compile_definitions(
   ${PROJECT_NAME} 

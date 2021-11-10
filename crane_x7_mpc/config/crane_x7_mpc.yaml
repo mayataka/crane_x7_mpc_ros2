@@ -1,45 +1,3 @@
-crane_x7_mpc_composition:
-  ros__parameters:
-    dt: 0.0025
-    T: 0.5
-    N: 20
-    nthreads: 2
-    niter: 2
-    barrier: 0.1
-
-    qj_ref:
-      qj1_ref: 1.0
-      qj2_ref: 0
-      qj3_ref: 0
-      qj4_ref: 0
-      qj5_ref: 0
-      qj6_ref: 0
-      qj7_ref: 0
-
-    config_cost:
-      q_weight: 0.1
-      v_weight: 0.001
-      a_weight: 0.001
-      u_weight: 0.0
-      qf_weight: 0.1
-      vf_weight: 0.001
-
-    task_3d_cost:
-      q_weight: 1000
-      qf_weight: 1000
-
-    task_6d_cost:
-      q_trans_weight: 1000
-      q_rot_weight: 1000
-      qf_transe_weight: 1000
-      qf_rot_weight: 1000
-
-    task_6d_cost:
-      q_trans_weight: 1000
-      q_rot_weight: 1000
-      qf_transe_weight: 1000
-      qf_rot_weight: 1000
-
 crane_x7_mpc:
   ros__parameters:
     dt: 0.0025
@@ -49,35 +7,20 @@ crane_x7_mpc:
     niter: 2
     barrier: 0.1
 
-    qj_ref:
-      qj1_ref: 1.0
-      qj2_ref: 0
-      qj3_ref: 0
-      qj4_ref: 0
-      qj5_ref: 0
-      qj6_ref: 0
-      qj7_ref: 0
-
     config_cost:
-      q_weight: 0.1
-      v_weight: 0.001
+      q_weight: 0.001
+      v_weight: 0.01
       a_weight: 0.001
       u_weight: 0.0
-      qf_weight: 0.1
+      qf_weight: 0.01
       vf_weight: 0.001
 
     task_3d_cost:
-      q_weight: 1000
-      qf_weight: 1000
+      q_weight: 10
+      qf_weight: 10
 
     task_6d_cost:
-      q_trans_weight: 1000
-      q_rot_weight: 1000
-      qf_transe_weight: 1000
-      qf_rot_weight: 1000
-
-    task_6d_cost:
-      q_trans_weight: 1000
-      q_rot_weight: 1000
-      qf_transe_weight: 1000
-      qf_rot_weight: 1000
+      q_trans_weight: 10
+      q_rot_weight: 10
+      qf_transe_weight: 10
+      qf_rot_weight: 10

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <memory>
+#include <deque>
 #include <cmath>
 
 #include "Eigen/Core"
@@ -13,18 +14,18 @@
 #include "ament_index_cpp/get_package_share_directory.hpp"
 #include "std_srvs/srv/set_bool.hpp"
 
-#include "idocp/solver/unconstr_ocp_solver.hpp"
-#include "idocp/cost/cost_function.hpp"
-#include "idocp/cost/configuration_space_cost.hpp"
-#include "idocp/cost/time_varying_task_space_3d_cost.hpp"
-#include "idocp/cost/time_varying_task_space_6d_cost.hpp"
-#include "idocp/constraints/constraints.hpp"
-#include "idocp/constraints/joint_position_lower_limit.hpp"
-#include "idocp/constraints/joint_position_upper_limit.hpp"
-#include "idocp/constraints/joint_velocity_lower_limit.hpp"
-#include "idocp/constraints/joint_velocity_upper_limit.hpp"
-#include "idocp/constraints/joint_torques_lower_limit.hpp"
-#include "idocp/constraints/joint_torques_upper_limit.hpp"
+#include "robotoc/solver/unconstr_ocp_solver.hpp"
+#include "robotoc/cost/cost_function.hpp"
+#include "robotoc/cost/configuration_space_cost.hpp"
+#include "robotoc/cost/time_varying_task_space_3d_cost.hpp"
+#include "robotoc/cost/time_varying_task_space_6d_cost.hpp"
+#include "robotoc/constraints/constraints.hpp"
+#include "robotoc/constraints/joint_position_lower_limit.hpp"
+#include "robotoc/constraints/joint_position_upper_limit.hpp"
+#include "robotoc/constraints/joint_velocity_lower_limit.hpp"
+#include "robotoc/constraints/joint_velocity_upper_limit.hpp"
+#include "robotoc/constraints/joint_torques_lower_limit.hpp"
+#include "robotoc/constraints/joint_torques_upper_limit.hpp"
 
 #include "visiblity_control.h"
 
@@ -32,12 +33,12 @@
 namespace crane_x7_mpc 
 {
 
-class TimeVaryingTaskSpace3DRef final : public idocp::TimeVaryingTaskSpace3DRefBase {
+class TimeVaryingTaskSpace3DRef final : public robotoc::TimeVaryingTaskSpace3DRefBase {
 public:
   TimeVaryingTaskSpace3DRef() 
     : TimeVaryingTaskSpace3DRefBase() {
-    pos0_ << 0.546, 0, 0.76;
-    radius_ = 0.05;
+    pos0_ << 0.3, 0, 0.3;
+    radius_ = 0.1;
     is_active_ = false;
   }
 
@@ -68,15 +69,15 @@ private:
 };
 
 
-class TimeVaryingTaskSpace6DRef final : public idocp::TimeVaryingTaskSpace6DRefBase {
+class TimeVaryingTaskSpace6DRef final : public robotoc::TimeVaryingTaskSpace6DRefBase {
 public:
   TimeVaryingTaskSpace6DRef() 
     : TimeVaryingTaskSpace6DRefBase() {
     rotm_  <<  0, 0, 1, 
                0, 1, 0,
               -1, 0, 0;
-    pos0_ << 0.546, 0, 0.76;
-    radius_ = 0.05;
+    pos0_ << 0.3, 0, 0.3;
+    radius_ = 0.1;
     is_active_ = false;
   }
 
@@ -126,31 +127,32 @@ public:
 
 private:
   // OCP solver 
-  idocp::UnconstrOCPSolver ocp_solver_;
+  robotoc::UnconstrOCPSolver ocp_solver_;
   int N_, nthreads_, niter_; 
   double T_, dt_, barrier_;
-  idocp::Robot robot_;
+  robotoc::Robot robot_;
   // Cost function
   int end_effector_frame_;
-  std::shared_ptr<idocp::CostFunction> cost_;
-  std::shared_ptr<idocp::ConfigurationSpaceCost> config_cost_;
-  std::shared_ptr<idocp::TimeVaryingTaskSpace3DCost> task_cost_3d_;
-  std::shared_ptr<idocp::TimeVaryingTaskSpace6DCost> task_cost_6d_;
+  std::shared_ptr<robotoc::CostFunction> cost_;
+  std::shared_ptr<robotoc::ConfigurationSpaceCost> config_cost_;
+  std::shared_ptr<robotoc::TimeVaryingTaskSpace3DCost> task_cost_3d_;
+  std::shared_ptr<robotoc::TimeVaryingTaskSpace6DCost> task_cost_6d_;
   std::shared_ptr<TimeVaryingTaskSpace3DRef> ref_3d_;
   std::shared_ptr<TimeVaryingTaskSpace6DRef> ref_6d_;
   // Constraints
-  std::shared_ptr<idocp::Constraints> constraints_;
-  std::shared_ptr<idocp::JointPositionLowerLimit> joint_position_lower_limit_;
-  std::shared_ptr<idocp::JointPositionUpperLimit> joint_position_upper_limit_;
-  std::shared_ptr<idocp::JointVelocityLowerLimit> joint_velocity_lower_limit_;
-  std::shared_ptr<idocp::JointVelocityUpperLimit> joint_velocity_upper_limit_;
-  std::shared_ptr<idocp::JointTorquesLowerLimit> joint_torques_lower_limit_;
-  std::shared_ptr<idocp::JointTorquesUpperLimit> joint_torques_upper_limit_;
+  std::shared_ptr<robotoc::Constraints> constraints_;
+  std::shared_ptr<robotoc::JointPositionLowerLimit> joint_position_lower_limit_;
+  std::shared_ptr<robotoc::JointPositionUpperLimit> joint_position_upper_limit_;
+  std::shared_ptr<robotoc::JointVelocityLowerLimit> joint_velocity_lower_limit_;
+  std::shared_ptr<robotoc::JointVelocityUpperLimit> joint_velocity_upper_limit_;
+  std::shared_ptr<robotoc::JointTorquesLowerLimit> joint_torques_lower_limit_;
+  std::shared_ptr<robotoc::JointTorquesUpperLimit> joint_torques_upper_limit_;
   // Subscriber and publisher for state-feedback control
   std::shared_ptr<rclcpp::Subscription<sensor_msgs::msg::JointState>> joint_state_subscriber_;
   std_msgs::msg::Float64MultiArray command_msg_;
   std::shared_ptr<rclcpp::Publisher<std_msgs::msg::Float64MultiArray>> joint_command_publisher_;
   std::shared_ptr<rclcpp::Service<std_srvs::srv::SetBool>> enable_3d_ref_, enable_6d_ref_;
+  std::deque<Eigen::VectorXd> q_commands_;
 
   Eigen::VectorXd q_, v_, a_, qj_ref_;
 
@@ -161,4 +163,4 @@ private:
 
 } // namespace crane_x7_mpc 
 
-#endif  // CRANE_X7_MPC__CRANE_X7_MPC_HPP_
+#endif  // CRANE_X7_MPC__CRANE_X7_MPC_HPP_ 

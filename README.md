@@ -1,6 +1,6 @@
 # CRANE_X7_MPC_ROS2
 
-This is an example implementation of MPC for a robot manipulator based on [idocp](https://github.com/mayataka/idocp) with ROS2.
+This is an example implementation of MPC for a robot manipulator using [robotoc](https://github.com/mayataka/robotoc) with ROS2.
 
 ### CAUTION: This repo is under development
 

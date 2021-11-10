@@ -6,10 +6,7 @@ controller_manager:
       type: joint_state_broadcaster/JointStateBroadcaster
 
     joint_position_controller:
-      type: joint_position_controller/JointGroupPositionController
-
-    joint_velocity_controller:
-      type: velocity_controllers/JointGroupVelocityController
+      type: position_controllers/JointGroupPositionController
 
     # gripper_controller:
     #   type: joint_trajectory_controller/JointTrajectoryController
@@ -26,23 +23,6 @@ joint_position_controller:
       - crane_x7_wrist_joint
     command_interfaces:
       - position
-    state_interfaces:
-      - position
-      - velocity
-
-joint_velocity_controller:
-  ros__parameters:
-    joints:
-      - crane_x7_shoulder_fixed_part_pan_joint
-      - crane_x7_shoulder_revolute_part_tilt_joint
-      - crane_x7_upper_arm_revolute_part_twist_joint
-      - crane_x7_upper_arm_revolute_part_rotate_joint
-      - crane_x7_lower_arm_fixed_part_joint
-      - crane_x7_lower_arm_revolute_part_joint
-      - crane_x7_wrist_joint
-    command_interfaces:
-      - position
-      # - velocity
     state_interfaces:
       - position
       - velocity
